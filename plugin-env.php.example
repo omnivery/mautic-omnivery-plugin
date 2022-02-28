@@ -1,0 +1,8 @@
+<?php
+
+namespace MauticPlugin\MauticMailgunMailerBundle\Env;
+
+define(__NAMESPACE__ .  '\\MAX_BATCH_LIMIT', <integer>);
+define(__NAMESPACE__ . '\\BATCH_RECIPIENT_COUNT', <integer>);
+define(__NAMESPACE__ . '\\REGION', '<string>');  // Valid options are 'us' and 'eu'
+define(__NAMESPACE__ . '\\WEBHOOK_SIGNING_KEY', '<string>');

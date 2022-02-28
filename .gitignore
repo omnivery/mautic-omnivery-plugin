@@ -1,0 +1,7 @@
+.idea
+!.gitignore
+!.htaccess
+!.gitkeep
+vendor/*
+/.php_cs.cache
+/.plugin-env.php
