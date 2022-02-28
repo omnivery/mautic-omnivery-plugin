@@ -1,10 +1,10 @@
-# Mailgun API plugin for Mautic v3
+# Omnivery API plugin for Mautic v3
 
-Plugin provides integration with Mailgun so you can send email messages from Mautic via API using your domains.
+Plugin provides integration with Omnivery so you can send email messages from Mautic via API using your domains.
 
 **Main Features**
 
-- Sending emails via Mailgun API.
+- Sending emails via Omnivery API.
 - Multi-domains configuration.
 
 ### Prerequisites
@@ -62,9 +62,9 @@ Pretty much the same as installing procedure only make sure you use ```--env=pro
 
 ## Documentation
 
-* Choose Mailgun Api as the mail service, in Mautic Configuration > Email Settings. Enter default host (domain) and api key. The details you set on this tab will be used if configuration for specific domain cannot be found.
+* Choose Omnivery Api as the mail service, in Mautic Configuration > Email Settings. Enter default host (domain) and api key. The details you set on this tab will be used if configuration for specific domain cannot be found.
 * Which of your domains will be used by this plugin to send the message depends on from field of your email.
-* You can add more domains and api keys on Mailgun-multi Domains tab in Mautic Configuration.
+* You can add more domains and api keys on Omnivery-multi Domains tab in Mautic Configuration.
 * You should be able to edit all fields for specific domain **with the exception of host**. If you want to edit host field you will have to delete current configuration and add new one.
 * To ensure that bounced emails are properly showed on Mautic graphs make sure you add custom header with name: ```TOTTGROUPID``` value of this field must be equivalent to email id (you can see email id in the link when you open specific record from Channels > Emails list). See the image below for an example.
 
