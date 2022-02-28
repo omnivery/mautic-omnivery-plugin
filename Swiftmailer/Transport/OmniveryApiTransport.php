@@ -397,10 +397,10 @@ class OmniveryApiTransport extends AbstractTokenArrayTransport implements \Swift
         $messageArray['to']                  = [];
         foreach ($metadata as $recipient => $mailData) {
             $messageArray['to'][]                            = $recipient;
-            $messageArray['recipient-variables'][$recipient] = [];
-            foreach ($mailData['tokens'] as $token => $tokenData) {
+            //$messageArray['recipient-variables'][$recipient] = [];
+            /*foreach ($mailData['tokens'] as $token => $tokenData) {
                 $messageArray['recipient-variables'][$recipient][$mailgunTokens[$token]] = $tokenData;
-            }
+            }*/
         }
 
         if (empty($messageArray['to'])) {
