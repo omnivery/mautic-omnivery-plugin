@@ -1,6 +1,6 @@
 <?php
 
-namespace MauticPlugin\MauticMailgunMailerBundle\Swiftmailer\Transport;
+namespace MauticPlugin\OmniveryMailerBundle\Swiftmailer\Transport;
 
 use GuzzleHttp\Client;
 use Mautic\CoreBundle\Helper\CoreParametersHelper;
@@ -14,9 +14,9 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\Translation\TranslatorInterface;
 
-class MailgunApiTransport extends AbstractTokenArrayTransport implements \Swift_Transport, CallbackTransportInterface
+class OmniveryApiTransport extends AbstractTokenArrayTransport implements \Swift_Transport, CallbackTransportInterface
 {
-    private $host = 'api.%region_dot%mailgun.net';
+    private $host = 'mg-api.omnivery.dev';
 
     /**
      * @var int
@@ -275,7 +275,7 @@ class MailgunApiTransport extends AbstractTokenArrayTransport implements \Swift_
      */
     public function getCallbackPath(): string
     {
-        return 'mailgun_api';
+        return 'omnivery_api';
     }
 
     /**
@@ -370,7 +370,8 @@ class MailgunApiTransport extends AbstractTokenArrayTransport implements \Swift_
 
     private function getEndpoint(): string
     {
-        return str_replace('%region_dot%', 'us' !== ($this->getRegion() ?: 'us') ? $this->getRegion().'.' : '', $this->host);
+        //return str_replace('%region_dot%', 'us' !== ($this->getRegion() ?: 'us') ? $this->getRegion().'.' : '', $this->host);
+        return $this->host;
     }
 
     private function getMessage($message): array

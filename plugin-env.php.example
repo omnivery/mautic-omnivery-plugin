@@ -1,6 +1,6 @@
 <?php
 
-namespace MauticPlugin\MauticMailgunMailerBundle\Env;
+namespace MauticPlugin\OmniveryMailerBundle\Env;
 
 define(__NAMESPACE__ .  '\\MAX_BATCH_LIMIT', <integer>);
 define(__NAMESPACE__ . '\\BATCH_RECIPIENT_COUNT', <integer>);
