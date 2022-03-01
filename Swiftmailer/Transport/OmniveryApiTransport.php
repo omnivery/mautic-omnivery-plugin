@@ -395,17 +395,20 @@ class OmniveryApiTransport extends AbstractTokenArrayTransport implements \Swift
 
         $messageArray['recipient-variables'] = [];
         $messageArray['to']                  = [];
+        $recipients                          = [];
         foreach ($metadata as $recipient => $mailData) {
-            $messageArray['to'][]                            = $recipient;
-            //$messageArray['recipient-variables'][$recipient] = [];
-            /*foreach ($mailData['tokens'] as $token => $tokenData) {
+            $recipients[]                                    = $recipient;
+            $messageArray['recipient-variables'][$recipient] = [];
+            foreach ($mailData['tokens'] as $token => $tokenData) {
                 $messageArray['recipient-variables'][$recipient][$mailgunTokens[$token]] = $tokenData;
-            }*/
+            }
         }
 
-        if (empty($messageArray['to'])) {
-            $messageArray['to'] = array_keys($messageArray['recipients']['to']);
+        if (!count($recipients)) {
+            $recipients = array_keys($messageArray['recipients']['to']);
         }
+
+        $messageArray['to'] = implode(',', $recipients);
 
         return $messageArray;
     }
@@ -432,6 +435,9 @@ class OmniveryApiTransport extends AbstractTokenArrayTransport implements \Swift
         if (!empty($message['recipients']['bcc'])) {
             $payload['bcc'] = $message['recipients']['bcc'];
         }
+
+        $this->logger->debug('getPayload');
+        $this->logger->debug(serialize($payload));
 
         return $payload;
     }
