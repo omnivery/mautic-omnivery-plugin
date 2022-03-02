@@ -12,20 +12,20 @@ require_once MAUTIC_ROOT_DIR.'/plugins/OmniveryMailerBundle/.plugin-env.php';
 
 return [
     'name'        => 'OmniveryMailer',
-    'description' => 'Integrate Swiftmailer transport for Mailgun API',
+    'description' => 'Integrate Swiftmailer transport for Omnivery API',
     'author'      => 'Matic Zagmajster',
     'version'     => '1.0.0',
 
     'services' => [
         'forms' => [
-            'mautic.form.type.mailgun.account' => [
+            'mautic.omnivery.form.type.account' => [
                 'class'     => \MauticPlugin\OmniveryMailerBundle\Form\Type\MailgunAccountType::class,
                 'arguments' => [
                     'mautic.helper.core_parameters',
                 ],
             ],
 
-            'mautic.form.type.mailgun.config' => [
+            'mautic.omnivery.form.type.config' => [
                 'class'     => \MauticPlugin\OmniveryMailerBundle\Form\Type\ConfigType::class,
                 'arguments' => [
                     'mautic.helper.core_parameters',
@@ -34,10 +34,17 @@ return [
         ],
 
         'events' => [
-            'mautic.mailgun.subscriber.config' => [
+            'mautic.omnivery.subscriber.config' => [
                 'class'     => \MauticPlugin\OmniveryMailerBundle\EventListener\ConfigSubscriber::class,
                 'arguments' => [
                     'mautic.helper.core_parameters',
+                ],
+            ],
+
+            'mautic.omnivery.subscriber.email' => [
+                'class'     => \MauticPlugin\OmniveryMailerBundle\EventListener\EmailSubscriber::class,
+                'arguments' => [
+                    'mautic.email.model.email',
                 ],
             ],
         ],
@@ -45,12 +52,12 @@ return [
         'integrations' => [],
 
         'other' => [
-            'mautic.transport.mailgun_api' => [
+            'mautic.transport.omnivery_api' => [
                 'class'        => \MauticPlugin\OmniveryMailerBundle\Swiftmailer\Transport\OmniveryApiTransport::class,
                 'serviceAlias' => 'swiftmailer.mailer.transport.%s',
                 'arguments'    => [
                     'mautic.email.model.transport_callback',
-                    'mautic.mailgun.guzzle.client',
+                    'mautic.omnivery.guzzle.client',
                     'translator',
                     '%mautic.mailer_mailgun_max_batch_limit%',
                     '%mautic.mailer_mailgun_batch_recipient_count%',
@@ -70,7 +77,7 @@ return [
                     \Mautic\EmailBundle\Model\TransportType::FIELD_API_KEY   => true,
                 ],
             ],
-            'mautic.mailgun.guzzle.client' => [
+            'mautic.omnivery.guzzle.client' => [
                 'class' => 'GuzzleHttp\Client',
             ],
         ],
