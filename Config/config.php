@@ -72,7 +72,7 @@ return [
                 ],
                 'tag'          => 'mautic.email_transport',
                 'tagArguments' => [
-                    \Mautic\EmailBundle\Model\TransportType::TRANSPORT_ALIAS => 'mautic.email.config.mailer_transport.mailgun_api',
+                    \Mautic\EmailBundle\Model\TransportType::TRANSPORT_ALIAS => 'mautic.email.config.mailer_transport.omnivery_api',
                     \Mautic\EmailBundle\Model\TransportType::FIELD_HOST      => false,
                     \Mautic\EmailBundle\Model\TransportType::FIELD_API_KEY   => true,
                 ],
