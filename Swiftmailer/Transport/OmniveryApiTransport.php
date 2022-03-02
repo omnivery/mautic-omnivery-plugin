@@ -290,10 +290,10 @@ class OmniveryApiTransport extends AbstractTokenArrayTransport implements \Swift
         $this->logger->debug('Start processCallbackRequest');
         $postData = json_decode($request->getContent(), true);
 
-        if (is_array($postData) && isset($postData['event-data'])) {
+        if (is_array($postData) && isset($postData['event_data'])) {
             // Mailgun API callback
             $events = [
-                $postData['event-data'],
+                $postData['event_data'],
             ];
         } else {
             // response must be an array
@@ -305,18 +305,19 @@ class OmniveryApiTransport extends AbstractTokenArrayTransport implements \Swift
             if (!in_array($event['event'], ['bounce', 'rejected', 'complained', 'unsubscribed', 'permanent_fail', 'failed'])) {
                 continue;
             }
+
+            // Try to get a description of an error.
             $reason = $event['event'];
+            if (isset($event['delivery-status'], $event['delivery-status']['message'], $event['delivery-status']['message'][0])) {
+                $reason = $event['delivery-status']['message'][0];
+            }
+            else if (isset($event['delivery-status'], $event['delivery-status']['description'])) {
+                $reason = $event['delivery-status']['description'];
+            }
+
             if ('bounce' === $event['event'] || 'rejected' === $event['event'] || 'permanent_fail' === $event['event'] || 'failed' === $event['event']) {
-                if (!empty($event['delivery-status']['message'])) {
-                    $reason = $event['delivery-status']['message'];
-                } elseif (!empty($event['delivery-status']['description'])) {
-                    $reason = $event['delivery-status']['description'];
-                }
                 $type = DoNotContact::BOUNCED;
             } elseif ('complained' === $event['event']) {
-                if (isset($event['delivery-status']['message'])) {
-                    $reason = $event['delivery-status']['message'];
-                }
                 $type = DoNotContact::UNSUBSCRIBED;
             } elseif ('unsubscribed' === $event['event']) {
                 $reason = 'User unsubscribed';
