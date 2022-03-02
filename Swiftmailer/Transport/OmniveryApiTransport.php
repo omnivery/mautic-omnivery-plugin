@@ -310,8 +310,7 @@ class OmniveryApiTransport extends AbstractTokenArrayTransport implements \Swift
             $reason = $event['event'];
             if (isset($event['delivery-status'], $event['delivery-status']['message'], $event['delivery-status']['message'][0])) {
                 $reason = $event['delivery-status']['message'][0];
-            }
-            else if (isset($event['delivery-status'], $event['delivery-status']['description'])) {
+            } elseif (isset($event['delivery-status'], $event['delivery-status']['description'])) {
                 $reason = $event['delivery-status']['description'];
             }
 
