@@ -199,10 +199,17 @@ class OmniveryApiTransport extends AbstractTokenArrayTransport implements \Swift
 
             $preparedMessage = $this->getMessage($message);
 
-            $payload               = $this->getPayload($preparedMessage);
-            $payload['v:CUSTOMID'] = null;
-            if (isset($preparedMessage['headers']['TOTTGROUPID'])) {
-                $payload['v:CUSTOMID'] = (int) $preparedMessage['headers']['TOTTGROUPID'];
+            $payload                      = $this->getPayload($preparedMessage);
+            $payload['v:OMNIVERYGROUPID'] = null;
+            if (isset($preparedMessage['headers']['OMNIVERYGROUPID'])) {
+                $payload['v:OMNIVERYGROUPID'] = (int) $preparedMessage['headers']['OMNIVERYGROUPID'];
+            }
+
+            if (isset($preparedMessage['headers'])) {
+                foreach ($$preparedMessage['headers'] as $key => $value) {
+                    $headerKey           = 'h:'.$key;
+                    $payload[$headerKey] = $value;
+                }
             }
 
             $endpoint = sprintf('%s/v3/%s/messages', $this->getEndpoint(), urlencode($this->getDomain()));
@@ -210,7 +217,7 @@ class OmniveryApiTransport extends AbstractTokenArrayTransport implements \Swift
                 'https://'.$endpoint,
                 [
                     'auth'        => ['api', $this->getApiKey(), 'basic'],
-                    'headers'     => $preparedMessage['headers'],
+                    //'headers'     => $preparedMessage['headers'],
                     'form_params' => $payload,
                 ]
             );
