@@ -30,15 +30,15 @@ class EmailSubscriber implements EventSubscriberInterface
         $email   = $event->getEmail();
         $headers = $email->getHeaders();
         $groupId = null;
-        if (isset($headers['OMNIVERYGROUPID'])) {
-            $groupId = \filter_var($headers['OMNIVERYGROUPID'], \FILTER_VALIDATE_INT);
+        if (isset($headers['MauticIdent'])) {
+            $groupId = \filter_var($headers['MauticIdent'], \FILTER_VALIDATE_INT);
         }
 
         if ($groupId === $email->getId()) {
             return;
         }
 
-        $headers['OMNIVERYGROUPID'] = $email->getId();
+        $headers['MauticIdent'] = $email->getId();
         $email->setHeaders($headers);
         $this->model->saveEntity($email);
     }

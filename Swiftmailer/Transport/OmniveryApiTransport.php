@@ -200,9 +200,9 @@ class OmniveryApiTransport extends AbstractTokenArrayTransport implements \Swift
             $preparedMessage = $this->getMessage($message);
 
             $payload                      = $this->getPayload($preparedMessage);
-            $payload['v:OMNIVERYGROUPID'] = null;
-            if (isset($preparedMessage['headers']['OMNIVERYGROUPID'])) {
-                $payload['v:OMNIVERYGROUPID'] = (int) $preparedMessage['headers']['OMNIVERYGROUPID'];
+            $payload['v:MauticIdent']     = null;
+            if (isset($preparedMessage['headers']['MauticIdent'])) {
+                $payload['v:MauticIdent'] = (int) $preparedMessage['headers']['MauticIdent'];
             }
 
             if (isset($preparedMessage['headers'])) {
@@ -336,8 +336,8 @@ class OmniveryApiTransport extends AbstractTokenArrayTransport implements \Swift
 
             $channelId = null;
             $this->logger->debug(serialize($event));
-            if (isset($event['user-variables']['OMNIVERYGROUPID'])) {
-                $event['CustomID'] = $event['user-variables']['OMNIVERYGROUPID'];
+            if (isset($event['user-variables']['MauticIdent'])) {
+                $event['CustomID'] = $event['user-variables']['MauticIdent'];
 
                 // Make sure channel ID is always set, so data on graph is displayed correctly.
                 $channelId = (int) $event['CustomID'];
