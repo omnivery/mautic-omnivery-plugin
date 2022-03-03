@@ -206,7 +206,7 @@ class OmniveryApiTransport extends AbstractTokenArrayTransport implements \Swift
             }
 
             if (isset($preparedMessage['headers'])) {
-                foreach ($$preparedMessage['headers'] as $key => $value) {
+                foreach ($preparedMessage['headers'] as $key => $value) {
                     $headerKey           = 'h:'.$key;
                     $payload[$headerKey] = $value;
                 }
