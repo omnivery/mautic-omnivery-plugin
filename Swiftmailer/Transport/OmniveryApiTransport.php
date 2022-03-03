@@ -213,11 +213,13 @@ class OmniveryApiTransport extends AbstractTokenArrayTransport implements \Swift
             }
 
             $endpoint = sprintf('%s/v3/%s/messages', $this->getEndpoint(), urlencode($this->getDomain()));
+
+            $this->logger->debug('Request endpoint: '.$endpoint);
+            $this->logger->debug('Request: '.serialize($payload));
             $response = $this->client->post(
                 'https://'.$endpoint,
                 [
                     'auth'        => ['api', $this->getApiKey(), 'basic'],
-                    //'headers'     => $preparedMessage['headers'],
                     'form_params' => $payload,
                 ]
             );
@@ -442,9 +444,6 @@ class OmniveryApiTransport extends AbstractTokenArrayTransport implements \Swift
         if (!empty($message['recipients']['bcc'])) {
             $payload['bcc'] = $message['recipients']['bcc'];
         }
-
-        $this->logger->debug('getPayload');
-        $this->logger->debug(serialize($payload));
 
         return $payload;
     }
