@@ -421,6 +421,9 @@ class OmniveryApiTransport extends AbstractTokenArrayTransport implements \Swift
 
     private function setAdditionalMessageAttributes($preparedMessage)
     {
+        $from          = $this->message->getFrom();
+        $fromEmail     = current(array_keys($from));
+        $currentName   = $from[$fromEmail];
         // From name, email
         if (!isset($preparedMessage['from']) || !is_array($preparedMessage['from'])) {
             $preparedMessage['from'] = [];
@@ -429,12 +432,24 @@ class OmniveryApiTransport extends AbstractTokenArrayTransport implements \Swift
         $defaultFromEmail = $this->coreParametersHelper->get('mailer_from_email');
         $defaultFromName  = $this->coreParametersHelper->get('mailer_from_name');
         if (!isset($preparedMessage['from']['name'])) {
-            $preparedMessage['from']['name'] = $defaultFromName;
+            $preparedMessage['from']['name'] = (!empty($currentName)) ? $currentName : $defaultFromName;
         }
 
         if (isset($preparedMessage['from']['email'])) {
-            $preparedMessage['from']['email'] = $defaultFromEmail;
+            $preparedMessage['from']['email'] = (!empty($fromEmail)) ? $fromEmail : $defaultFromEmail;
         }
+
+        if (!isset($preparedMessage['headers'])) {
+            $preparedMessage['headers'] = [];
+        }
+
+        // List Unsubscribe Header
+        /*$recipientVars = $preparedMessage['recipient-variables'];
+        $leadData =  ( count($recipientVars) && isset($recipientVars[array_keys($recipientVars)[0]]) ) ? $recipientVars[array_keys($recipientVars)[0]] : [];
+        if (isset($leadData['unsubscribe_url'])) {
+            $preparedMessage['headers']['Lisst-Unsubscribe'] = $leadData['unsubscribe_url'];
+        }*/
+        // BCC, Reply-To
 
         return $preparedMessage;
     }
