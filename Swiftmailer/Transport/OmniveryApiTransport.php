@@ -178,27 +178,18 @@ class OmniveryApiTransport extends AbstractTokenArrayTransport implements \Swift
             }
         }
 
-        // Fully initialize instance to use Mailgun-multi account feature.
-        /*$from      = $message->getFrom();
-        $fromEmail = current(array_keys($from));
-        $oldName   = $from[$fromEmail];
-        $this->logger->notice('From email for Mailgun multi config: '.$fromEmail);*/
-        //$this->setAccountConfig($fromEmail);
-        /*if (!$this->isAccountConfigLoaded()) {
-            // We are sending email using domain that is not whitelisted by plugin configuration.
-            $newFromEmail = $this->coreParametersHelper->get('mailer_from_email');
-            $newFromName  = $this->coreParametersHelper->get('mailer_from_name');
+        /**
+         * @todo implement multi domain feature
+         */
+        // Fully initialize instance to use Omnivery-multi account feature.
 
-            // Swift_Mime_SimpleMessage
-            $newFromName = $oldName.' via '.$newFromName;
-            $message->setFrom([$newFromEmail], $newFromName);
-        }*/
+        if (!$this->isAccountConfigLoaded()) {
+            /**
+             * @todo
+             */
+        }
 
         try {
-            // Swift_Mime_SimpleMessage
-            //$newFromName = $oldName.' via '.$newFromName;
-            //$message->setFrom([$newFromEmail], $newFromName);
-
             $count = $this->getBatchRecipientCount($message);
 
             $preparedMessage = $this->getMessage($message);
