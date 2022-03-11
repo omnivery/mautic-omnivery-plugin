@@ -179,12 +179,12 @@ class OmniveryApiTransport extends AbstractTokenArrayTransport implements \Swift
         }
 
         // Fully initialize instance to use Mailgun-multi account feature.
-        $from      = $message->getFrom();
+        /*$from      = $message->getFrom();
         $fromEmail = current(array_keys($from));
         $oldName   = $from[$fromEmail];
-        $this->logger->notice('From email for Mailgun multi config: '.$fromEmail);
-        $this->setAccountConfig($fromEmail);
-        if (!$this->isAccountConfigLoaded()) {
+        $this->logger->notice('From email for Mailgun multi config: '.$fromEmail);*/
+        //$this->setAccountConfig($fromEmail);
+        /*if (!$this->isAccountConfigLoaded()) {
             // We are sending email using domain that is not whitelisted by plugin configuration.
             $newFromEmail = $this->coreParametersHelper->get('mailer_from_email');
             $newFromName  = $this->coreParametersHelper->get('mailer_from_name');
@@ -192,12 +192,17 @@ class OmniveryApiTransport extends AbstractTokenArrayTransport implements \Swift
             // Swift_Mime_SimpleMessage
             $newFromName = $oldName.' via '.$newFromName;
             $message->setFrom([$newFromEmail], $newFromName);
-        }
+        }*/
 
         try {
+            // Swift_Mime_SimpleMessage
+            //$newFromName = $oldName.' via '.$newFromName;
+            //$message->setFrom([$newFromEmail], $newFromName);
+
             $count = $this->getBatchRecipientCount($message);
 
             $preparedMessage = $this->getMessage($message);
+            $preparedMessage = $this->setAdditionalMessageAttributes($preparedMessage);
 
             $payload                      = $this->getPayload($preparedMessage);
             $payload['v:MauticIdent']     = null;
@@ -404,6 +409,7 @@ class OmniveryApiTransport extends AbstractTokenArrayTransport implements \Swift
 
         $messageArray['recipient-variables'] = [];
         $messageArray['to']                  = [];
+        //$messageArray['from'] = '"Test DDEV from" anyone@mautic.omnivery.dev';
         $recipients                          = [];
         foreach ($metadata as $recipient => $mailData) {
             $recipients[]                                    = $recipient;
@@ -422,10 +428,30 @@ class OmniveryApiTransport extends AbstractTokenArrayTransport implements \Swift
         return $messageArray;
     }
 
+    private function setAdditionalMessageAttributes($preparedMessage)
+    {
+        // From name, email
+        if (!isset($preparedMessage['from']) || !is_array($preparedMessage['from'])) {
+            $preparedMessage['from'] = [];
+        }
+
+        $defaultFromEmail = $this->coreParametersHelper->get('mailer_from_email');
+        $defaultFromName  = $this->coreParametersHelper->get('mailer_from_name');
+        if (!isset($preparedMessage['from']['name'])) {
+            $preparedMessage['from']['name'] = $defaultFromName;
+        }
+
+        if (isset($preparedMessage['from']['email'])) {
+            $preparedMessage['from']['email'] = $defaultFromEmail;
+        }
+
+        return $preparedMessage;
+    }
+
     private function getPayload(array $message): array
     {
         $payload = [
-            'from'    => sprintf('%s <%s>', $message['from']['name'], $message['from']['email']),
+            'from'    => sprintf('"%s" <%s>', $message['from']['name'], $message['from']['email']),
             'to'      => $message['to'],
             'subject' => $message['subject'],
             'html'    => $message['html'],
