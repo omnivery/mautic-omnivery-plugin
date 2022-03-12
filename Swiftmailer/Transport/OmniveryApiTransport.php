@@ -444,11 +444,12 @@ class OmniveryApiTransport extends AbstractTokenArrayTransport implements \Swift
         }
 
         // List Unsubscribe Header
-        /*$recipientVars = $preparedMessage['recipient-variables'];
-        $leadData =  ( count($recipientVars) && isset($recipientVars[array_keys($recipientVars)[0]]) ) ? $recipientVars[array_keys($recipientVars)[0]] : [];
+        $recipientVars = $preparedMessage['recipient-variables'];
+        $leadData      =  (count($recipientVars) && isset($recipientVars[array_keys($recipientVars)[0]])) ? $recipientVars[array_keys($recipientVars)[0]] : [];
         if (isset($leadData['unsubscribe_url'])) {
-            $preparedMessage['headers']['Lisst-Unsubscribe'] = $leadData['unsubscribe_url'];
-        }*/
+            $preparedMessage['headers']['List-Unsubscribe'] = $leadData['unsubscribe_url'];
+        }
+
         // BCC, Reply-To
 
         return $preparedMessage;
