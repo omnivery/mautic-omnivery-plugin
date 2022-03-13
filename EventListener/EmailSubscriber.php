@@ -19,9 +19,9 @@ class EmailSubscriber implements EventSubscriberInterface
     public static function getSubscribedEvents()
     {
         return [
-            EmailEvents::EMAIL_POST_SAVE => [
-                ['addGroupIdHeader', 0],
-            ],
+            /*EmailEvents::EMAIL_POST_SAVE => [
+
+            ],*/
         ];
     }
 

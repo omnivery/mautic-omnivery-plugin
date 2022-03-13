@@ -197,8 +197,8 @@ class OmniveryApiTransport extends AbstractTokenArrayTransport implements \Swift
 
             $payload                      = $this->getPayload($preparedMessage);
             $payload['v:MauticIdent']     = null;
-            if (isset($preparedMessage['headers']['MauticIdent'])) {
-                $payload['v:MauticIdent'] = (int) $preparedMessage['headers']['MauticIdent'];
+            if (isset($preparedMessage['headers']['X-EMAIL-ID'])) {
+                $payload['v:MauticIdent'] = (int) $preparedMessage['headers']['X-EMAIL-ID'];
             }
 
             if (isset($preparedMessage['headers'])) {
