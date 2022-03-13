@@ -283,6 +283,15 @@ class OmniveryApiTransport extends AbstractTokenArrayTransport implements \Swift
         return 'omnivery_api';
     }
 
+    public function getWhCallbackUrl()
+    {
+        return sprintf(
+            '%s/mailer/%s/callback',
+            $this->coreParametersHelper->get('site_url'),
+            $this->getCallbackPath()
+        );
+    }
+
     /**
      * Handle response.
      *
@@ -469,6 +478,11 @@ class OmniveryApiTransport extends AbstractTokenArrayTransport implements \Swift
             'html'    => $message['html'],
             'text'    => $message['text'],
         ];
+
+        // Configrue all webhooks automatically for the end user.
+        if (MAUTIC_ENV == 'prod') {
+            $payload['callback_url'] = $this->getWhCallbackUrl();
+        }
 
         $data = $this->message->getReplyTo();
         if (is_array($data) && count($data)) {
