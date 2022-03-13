@@ -196,11 +196,6 @@ class OmniveryApiTransport extends AbstractTokenArrayTransport implements \Swift
             $preparedMessage = $this->setAdditionalMessageAttributes($preparedMessage);
 
             $payload                      = $this->getPayload($preparedMessage);
-            $payload['v:MauticIdent']     = null;
-            if (isset($preparedMessage['headers']['X-EMAIL-ID'])) {
-                $payload['v:MauticIdent'] = (int) $preparedMessage['headers']['X-EMAIL-ID'];
-            }
-
             if (isset($preparedMessage['headers'])) {
                 foreach ($preparedMessage['headers'] as $key => $value) {
                     $headerKey           = 'h:'.$key;
@@ -341,8 +336,8 @@ class OmniveryApiTransport extends AbstractTokenArrayTransport implements \Swift
 
             $channelId = null;
             $this->logger->debug(serialize($event));
-            if (isset($event['user-variables']['MauticIdent'])) {
-                $event['CustomID'] = $event['user-variables']['MauticIdent'];
+            if (isset($event['message']['headers'], $event['message']['headers'])) {
+                $event['CustomID'] = $event['message']['headers']['X-EMAIL-ID'];
 
                 // Make sure channel ID is always set, so data on graph is displayed correctly.
                 $channelId = (int) $event['CustomID'];
