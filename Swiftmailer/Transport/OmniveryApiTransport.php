@@ -473,7 +473,7 @@ class OmniveryApiTransport extends AbstractTokenArrayTransport implements \Swift
         $toEmail = current(array_keys($data));
         $payload = [
             'from'    => sprintf('"%s" <%s>', $message['from']['name'], $message['from']['email']),
-            'to'      => sprintf('"%s", <%s>', $data[$toEmail], $toEmail),
+            'to'      => sprintf('"%s" <%s>', $data[$toEmail], $toEmail),
             'subject' => $message['subject'],
             'html'    => $message['html'],
             'text'    => $message['text'],
