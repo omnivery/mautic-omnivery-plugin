@@ -505,14 +505,6 @@ class OmniveryApiTransport extends AbstractTokenArrayTransport implements \Swift
         $this->logger->notice('recipient-variables');
         $this->logger->notice(json_encode($message['recipient-variables']));
 
-        if (!empty($message['recipients']['cc'])) {
-            $payload['cc'] = $message['recipients']['cc'];
-        }
-
-        if (!empty($message['recipients']['bcc'])) {
-            $payload['bcc'] = $message['recipients']['bcc'];
-        }
-
         return $payload;
     }
 
