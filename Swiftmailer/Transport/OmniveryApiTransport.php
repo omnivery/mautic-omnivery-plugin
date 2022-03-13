@@ -400,7 +400,6 @@ class OmniveryApiTransport extends AbstractTokenArrayTransport implements \Swift
 
         $messageArray['recipient-variables'] = [];
         $messageArray['to']                  = [];
-        //$messageArray['from'] = '"Test DDEV from" anyone@mautic.omnivery.dev';
         $recipients                          = [];
         foreach ($metadata as $recipient => $mailData) {
             $recipients[]                                    = $recipient;
@@ -445,25 +444,47 @@ class OmniveryApiTransport extends AbstractTokenArrayTransport implements \Swift
 
         // List Unsubscribe Header
         $recipientVars = $preparedMessage['recipient-variables'];
-        $leadData      =  (count($recipientVars) && isset($recipientVars[array_keys($recipientVars)[0]])) ? $recipientVars[array_keys($recipientVars)[0]] : [];
+        $leadEmail     = null;
+        $leadData      = [];
+        if (count($recipientVars)) {
+            $leadEmail = array_keys($recipientVars)[0];
+            $leadData  = $recipientVars[$leadEmail];
+        }
+
         if (isset($leadData['unsubscribe_url'])) {
             $preparedMessage['headers']['List-Unsubscribe'] = $leadData['unsubscribe_url'];
         }
-
-        // BCC, Reply-To
 
         return $preparedMessage;
     }
 
     private function getPayload(array $message): array
     {
+        $data    = $this->message->getTo();
+        $toEmail = current(array_keys($data));
         $payload = [
             'from'    => sprintf('"%s" <%s>', $message['from']['name'], $message['from']['email']),
-            'to'      => $message['to'],
+            'to'      => sprintf('"%s", <%s>', $data[$toEmail], $toEmail),
             'subject' => $message['subject'],
             'html'    => $message['html'],
             'text'    => $message['text'],
         ];
+
+        $data = $this->message->getReplyTo();
+        if (is_array($data) && count($data)) {
+            $payload['repy_to'] = implode(',', $data);
+        }
+
+        $data = $this->message->getBcc();
+        if (is_array($data) && count($data)) {
+            $payload['bcc'] = implode(',', $data);
+        }
+
+        $data = $this->message->getCc();
+        if (is_array($data) && count($data)) {
+            $payload['cc'] = implode(',', $data);
+        }
+
         if (count($message['recipient-variables'])) {
             $payload['recipient-variables'] = json_encode($message['recipient-variables']);
         }
