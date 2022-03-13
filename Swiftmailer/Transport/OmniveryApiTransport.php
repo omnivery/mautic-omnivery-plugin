@@ -86,6 +86,31 @@ class OmniveryApiTransport extends AbstractTokenArrayTransport implements \Swift
         return null !== $this->accountDomain;
     }
 
+    /**
+     * Format addresses.
+     *
+     * Keys are email addresses, values are names (that do not necessarly exist).
+     *
+     * @param array $addresses [description]
+     *
+     * @return string Comma separated pairs of recipients name & email addresses
+     */
+    private function formatAddresses(array $addresses): string
+    {
+        $recipients = [];
+        foreach ($addresses as $email => $name) {
+            if (is_string($name) && !empty($name)) {
+                $r = sprintf('"%s" <%s>', $name, $email);
+            } else {
+                $r = $email;
+            }
+
+            $recipients[] = $r;
+        }
+
+        return implode(',', $recipients);
+    }
+
     public function __construct(TransportCallback $transportCallback, Client $client, TranslatorInterface $translator, int $maxBatchLimit, ?int $batchRecipientCount, $webhookSigningKey = '', LoggerInterface $logger, CoreParametersHelper $coreParametersHelper)
     {
         $this->transportCallback    = $transportCallback;
@@ -464,11 +489,9 @@ class OmniveryApiTransport extends AbstractTokenArrayTransport implements \Swift
 
     private function getPayload(array $message): array
     {
-        $data    = $this->message->getTo();
-        $toEmail = current(array_keys($data));
         $payload = [
             'from'    => sprintf('"%s" <%s>', $message['from']['name'], $message['from']['email']),
-            'to'      => sprintf('"%s" <%s>', $data[$toEmail], $toEmail),
+            'to'      => $this->formatAddresses($this->message->getTo()),
             'subject' => $message['subject'],
             'html'    => $message['html'],
             'text'    => $message['text'],
@@ -480,18 +503,21 @@ class OmniveryApiTransport extends AbstractTokenArrayTransport implements \Swift
         }
 
         $data = $this->message->getReplyTo();
+        $this->logger->debug('ReplyTo '.serialize($data));
         if (is_array($data) && count($data)) {
-            $payload['repy_to'] = implode(',', $data);
+            $payload['reply_to'] = $this->formatAddresses($data);
         }
 
         $data = $this->message->getBcc();
+        $this->logger->debug('Bcc '.serialize($data));
         if (is_array($data) && count($data)) {
-            $payload['bcc'] = implode(',', $data);
+            $payload['bcc'] = $this->formatAddresses($data);
         }
 
         $data = $this->message->getCc();
+        $this->logger->debug('cc '.serialize($data));
         if (is_array($data) && count($data)) {
-            $payload['cc'] = implode(',', $data);
+            $payload['cc'] = $this->formatAddresses($data);
         }
 
         if (count($message['recipient-variables'])) {
