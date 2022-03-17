@@ -361,7 +361,7 @@ class OmniveryApiTransport extends AbstractTokenArrayTransport implements \Swift
 
             $channelId = null;
             $this->logger->debug(serialize($event));
-            if (isset($event['message']['headers'], $event['message']['headers'])) {
+            if (isset($event['message']['headers'], $event['message']['headers']['X-EMAIL-ID'])) {
                 $event['CustomID'] = $event['message']['headers']['X-EMAIL-ID'];
 
                 // Make sure channel ID is always set, so data on graph is displayed correctly.
