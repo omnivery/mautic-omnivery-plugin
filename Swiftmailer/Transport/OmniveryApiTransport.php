@@ -342,7 +342,7 @@ class OmniveryApiTransport extends AbstractTokenArrayTransport implements \Swift
                 $postData['event_data'],
             ];
         } else {
-            // response must be an array
+            // Response must be an array.
             return null;
         }
 
@@ -360,15 +360,59 @@ class OmniveryApiTransport extends AbstractTokenArrayTransport implements \Swift
                 $reason = $event['delivery-status']['description'];
             }
 
-            if ('bounce' === $event['event'] || 'rejected' === $event['event'] || 'permanent_fail' === $event['event'] || 'failed' === $event['event']) {
-                $type = DoNotContact::BOUNCED;
-            } elseif ('complained' === $event['event']) {
-                $type = DoNotContact::UNSUBSCRIBED;
-            } elseif ('unsubscribed' === $event['event']) {
-                $reason = 'User unsubscribed';
-                $type   = DoNotContact::UNSUBSCRIBED;
-            } else {
-                continue;
+            // Get error severity.
+            $severity = null;
+            if (isset($event['severity'])) {
+                $severity = $event['severity'];
+            }
+
+            $type            = null;
+            $canUseChannelId = true;
+            switch ($event['event']) {
+                case 'bounce':
+                case 'permanent_fail':
+                    $type = DoNotContact::BOUNCED;
+                    break;
+
+                case 'failed':
+                    switch ($severity) {
+                        case 'permanent':
+                            $type = DoNotContact::BOUNCED;
+                            break;
+
+                        case 'softbounce':
+                            $type = DoNotContact::BOUNCED;
+                            break;
+
+                        case 'temporary':
+                            /**
+                             * @todo What to do here?
+                             */
+                            break;
+
+                        default:
+                            break;
+                    }
+                    break;
+
+                case 'rejected':
+                    $type            = DoNotContact::IS_CONTACTABLE;
+                    $canUseChannelId = false;
+                    break;
+
+                case 'complained':
+                    $type = DoNotContact::UNSUBSCRIBED;
+                    break;
+
+                case 'unsubscribed':
+                    $reason = 'User unsubscribed';
+                    $type   = DoNotContact::UNSUBSCRIBED;
+                    break;
+
+                default:
+                    // Ignore any other events.
+                    break;
+                    break;
             }
 
             $channelId = null;
