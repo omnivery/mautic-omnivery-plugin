@@ -5,11 +5,10 @@ Plugin provides integration with Omnivery so you can send email messages from Ma
 **Main Features**
 
 - Sending emails via Omnivery API.
-- Multi-domains configuration.
 
 ### Prerequisites
 
-- Project was tested on Mautic 3.3.3
+- Project was tested on Mautic 4.2.0
 - During development having composer 1 setup can be handy to run scripts in `composer.json`.
 
 ### Installing
