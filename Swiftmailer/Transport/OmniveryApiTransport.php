@@ -111,6 +111,18 @@ class OmniveryApiTransport extends AbstractTokenArrayTransport implements \Swift
         return implode(',', $recipients);
     }
 
+    private function getEmailChannelId($headers): string
+    {
+        $keys = array_keys($headers);
+        foreach ($keys as $index => $orgKeyName) {
+            if ('x-email-id' == strtolower($orgKeyName)) {
+                return (string) $headers[$orgKeyName];
+            }
+        }
+
+        return '';
+    }
+
     public function __construct(TransportCallback $transportCallback, Client $client, TranslatorInterface $translator, int $maxBatchLimit, ?int $batchRecipientCount, $webhookSigningKey = '', LoggerInterface $logger, CoreParametersHelper $coreParametersHelper)
     {
         $this->transportCallback    = $transportCallback;
@@ -361,11 +373,13 @@ class OmniveryApiTransport extends AbstractTokenArrayTransport implements \Swift
 
             $channelId = null;
             $this->logger->debug(serialize($event));
-            if (isset($event['message']['headers'], $event['message']['headers']['X-EMAIL-ID'])) {
-                $event['CustomID'] = $event['message']['headers']['X-EMAIL-ID'];
+            if (isset($event['message']['headers'])) {
+                $event['CustomID'] = $this->getEmailChannelId($event['message']['headers']);
 
                 // Make sure channel ID is always set, so data on graph is displayed correctly.
-                $channelId = (int) $event['CustomID'];
+                if (!empty($event['CustomID'])) {
+                    $channelId = (int) $event['CustomID'];
+                }
             }
 
             if (isset($event['CustomID']) && '' !== $event['CustomID'] && false !== strpos($event['CustomID'], '-', 0)) {
