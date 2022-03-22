@@ -380,14 +380,10 @@ class OmniveryApiTransport extends AbstractTokenArrayTransport implements \Swift
                             $type = DoNotContact::BOUNCED;
                             break;
 
+                        case 'temporary':
                         case 'softbounce':
                             $type = DoNotContact::BOUNCED;
-                            break;
-
-                        case 'temporary':
-                            /**
-                             * @todo What to do here?
-                             */
+                            $canUseChannelId = false;
                             break;
 
                         default:
@@ -412,7 +408,6 @@ class OmniveryApiTransport extends AbstractTokenArrayTransport implements \Swift
                 default:
                     // Ignore any other events.
                     break;
-                    break;
             }
 
             $channelId = null;
@@ -426,15 +421,10 @@ class OmniveryApiTransport extends AbstractTokenArrayTransport implements \Swift
                 }
             }
 
-            if (isset($event['CustomID']) && '' !== $event['CustomID'] && false !== strpos($event['CustomID'], '-', 0)) {
-                $fistDashPos = strpos($event['CustomID'], '-', 0);
-                $leadIdHash  = substr($event['CustomID'], 0, $fistDashPos);
-                $leadEmail   = substr($event['CustomID'], $fistDashPos + 1, strlen($event['CustomID']));
-                if ($event['recipient'] == $leadEmail) {
-                    $this->transportCallback->addFailureByHashId($leadIdHash, $reason, $type);
-                }
-            } else {
+            if ($channelId !== null && $canUseChannelId) {
                 $this->transportCallback->addFailureByAddress($event['recipient'], $reason, $type, $channelId);
+            } else {
+                $this->transportCallback->addFailureByAddress($event['recipient'], $reason, $type, null);
             }
         }
 
