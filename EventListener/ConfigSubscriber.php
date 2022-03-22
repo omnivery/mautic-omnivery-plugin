@@ -92,6 +92,13 @@ class ConfigSubscriber implements EventSubscriberInterface
             'mailer_omnivery_new_api_key',
         ]);
 
+        // We cant ever use setting with mailer_is_owner to yes so make sure its always to No (request is validated only if previously whitelisted domain is used).
+        $allConfig = $event->getConfig();
+        $allConfig['mailer_is_owner'] = 0;
+        $event->setConfig($allConfig, 'mailer_is_owner');
+
+        //$this->coreParametersHelper->set('mailer_is_owner', 0);
+
         $config = $event->getConfig('omniveryconfig');
 
         $currentConfig = $this->coreParametersHelper->get('mailer_omnivery_accounts', []);
