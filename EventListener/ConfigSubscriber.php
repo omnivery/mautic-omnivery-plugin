@@ -97,8 +97,6 @@ class ConfigSubscriber implements EventSubscriberInterface
         $allConfig['mailer_is_owner'] = 0;
         $event->setConfig($allConfig, 'mailer_is_owner');
 
-        //$this->coreParametersHelper->set('mailer_is_owner', 0);
-
         $config = $event->getConfig('omniveryconfig');
 
         $currentConfig = $this->coreParametersHelper->get('mailer_omnivery_accounts', []);
