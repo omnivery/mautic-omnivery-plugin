@@ -16,7 +16,7 @@ use Symfony\Component\Translation\TranslatorInterface;
 
 class OmniveryApiTransport extends AbstractTokenArrayTransport implements \Swift_Transport, CallbackTransportInterface
 {
-    private $host = 'mg-api.omnivery.com';
+    private $host = 'mg-api.omnivery.net';
 
     /**
      * @var int
