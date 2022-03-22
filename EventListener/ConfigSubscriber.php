@@ -26,23 +26,23 @@ class ConfigSubscriber implements EventSubscriberInterface
     private $coreParametersHelper;
 
     /**
-     * Adds New Mailgun Account.
+     * Adds New Omnivery Account.
      *
      * If config for email domain already exists it will get overwritten.
      *
      * @param void
      */
-    private function addNewMailgunAccount(&$currentConfig, &$config)
+    private function addNewOmniveryAccount(&$currentConfig, &$config)
     {
-        $emailDomain                 = $this->getEmailDomain($config['mailer_mailgun_new_host']);
+        $emailDomain                 = $this->getEmailDomain($config['mailer_omnivery_new_host']);
         $currentConfig[$emailDomain] = [
-                'host'    => $config['mailer_mailgun_new_host'],
-                'api_key' => $config['mailer_mailgun_new_api_key'],
-                'region'  => $config['mailer_mailgun_region'],  // Initialize with gloabl region setting.
+                'host'    => $config['mailer_omnivery_new_host'],
+                'api_key' => $config['mailer_omnivery_new_api_key'],
+                'region'  => $config['mailer_omnivery_region'],  // Initialize with gloabl region setting.
         ];
         unset(
-            $config['mailer_mailgun_new_host'],
-            $config['mailer_mailgun_new_api_key']
+            $config['mailer_omnivery_new_host'],
+            $config['mailer_omnivery_new_api_key']
         );
     }
 
@@ -77,34 +77,34 @@ class ConfigSubscriber implements EventSubscriberInterface
     public function onConfigGenerate(ConfigBuilderEvent $event)
     {
         $event->addForm([
-            'bundle'     => 'MailgunMailerBundle',
-            'formAlias'  => 'mailgunconfig',
+            'bundle'     => 'OmniveryMailerBundle',
+            'formAlias'  => 'omniveryconfig',
             'formType'   => ConfigType::class,
-            'formTheme'  => 'MauticMailgunMailerBundle:FormTheme\Config',
-            'parameters' => $event->getParametersFromConfig('MauticMailgunMailerBundle'),
+            'formTheme'  => 'MauticOmniveryMailerBundle:FormTheme\Config',
+            'parameters' => $event->getParametersFromConfig('MauticOmniveryMailerBundle'),
         ]);
     }
 
     public function onConfigPreSave(ConfigEvent $event)
     {
         $event->unsetIfEmpty([
-            'mailer_mailgun_new_host',
-            'mailer_mailgun_new_api_key',
+            'mailer_omnivery_new_host',
+            'mailer_omnivery_new_api_key',
         ]);
 
-        $config = $event->getConfig('mailgunconfig');
+        $config = $event->getConfig('omniveryconfig');
 
-        $currentConfig = $this->coreParametersHelper->get('mailer_mailgun_accounts', []);
+        $currentConfig = $this->coreParametersHelper->get('mailer_omnivery_accounts', []);
 
-        if (!empty($config['mailer_mailgun_new_host']) && !empty($config['mailer_mailgun_new_api_key'])) {
-            $this->addNewMailgunAccount($currentConfig, $config);
+        if (!empty($config['mailer_omnivery_new_host']) && !empty($config['mailer_omnivery_new_api_key'])) {
+            $this->addNewOmniveryAccount($currentConfig, $config);
         }
 
         // Fix the config structure of existing accounts.
         $keys = \array_keys($config);
 
         foreach ($keys as $k) {
-            if (false === \strpos($k, 'mailer_mailgun_account_')) {
+            if (false === \strpos($k, 'mailer_omnivery_account_')) {
                 continue;
             }
 
@@ -130,14 +130,14 @@ class ConfigSubscriber implements EventSubscriberInterface
             unset($config[$k]);
         }
 
-        // Set Mailgun Accounts.
-        $config['mailer_mailgun_accounts'] = $currentConfig;
+        // Set Omnivery Accounts.
+        $config['mailer_omnivery_accounts'] = $currentConfig;
 
         // Global signing key is not updated.
-        if (isset($config['mailer_mailgun_webhook_signing_key']) && 0 === strpos($config['mailer_mailgun_webhook_signing_key'], '***')) {
-            $config['mailer_mailgun_webhook_signing_key'] = $this->coreParametersHelper->get('mailer_mailgun_webhook_signing_key', '');
+        if (isset($config['mailer_omnivery_webhook_signing_key']) && 0 === strpos($config['mailer_omnivery_webhook_signing_key'], '***')) {
+            $config['mailer_omnivery_webhook_signing_key'] = $this->coreParametersHelper->get('mailer_omnivery_webhook_signing_key', '');
         }
 
-        $event->setConfig($config, 'mailgunconfig');
+        $event->setConfig($config, 'omniveryconfig');
     }
 }

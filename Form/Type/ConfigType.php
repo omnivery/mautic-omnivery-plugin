@@ -13,7 +13,7 @@ namespace MauticPlugin\OmniveryMailerBundle\Form\Type;
 
 use Mautic\CoreBundle\Form\DataTransformer\ArrayStringTransformer;
 use Mautic\CoreBundle\Helper\CoreParametersHelper;
-use MauticPlugin\OmniveryMailerBundle\Form\Type\MailgunAccountType;
+use MauticPlugin\OmniveryMailerBundle\Form\Type\OmniveryAccountType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -32,10 +32,10 @@ class ConfigType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder->add(
-            'mailer_mailgun_batch_recipient_count',
+            'mailer_omnivery_batch_recipient_count',
             IntegerType::class,
             [
-                'label'      => 'mautic.mailgunmailer.form.global.batch_recipient_count',
+                'label'      => 'mautic.omniverymailer.form.global.batch_recipient_count',
                 'label_attr' => ['class' => 'control-label'],
                 'attr'       => [
                     'class'   => 'form-control',
@@ -50,10 +50,10 @@ class ConfigType extends AbstractType
         );
 
         $builder->add(
-            'mailer_mailgun_max_batch_limit',
+            'mailer_omnivery_max_batch_limit',
             IntegerType::class,
             [
-                'label'      => 'mautic.mailgunmailer.form.global.max_batch_limit',
+                'label'      => 'mautic.omniverymailer.form.global.max_batch_limit',
                 'label_attr' => ['class' => 'control-label'],
                 'attr'       => [
                     'class'   => 'form-control',
@@ -68,10 +68,10 @@ class ConfigType extends AbstractType
         );
 
         $builder->add(
-            'mailer_mailgun_region',
+            'mailer_omnivery_region',
             TextType::class,
             [
-                'label'      => 'mautic.mailgunmailer.form.global.region',
+                'label'      => 'mautic.omniverymailer.form.global.region',
                 'label_attr' => ['class' => 'control-label'],
                 'attr'       => [
                     'class'   => 'form-control',
@@ -85,7 +85,7 @@ class ConfigType extends AbstractType
             ]
         );
 
-        $webhookSigningKey = $options['data']['mailer_mailgun_webhook_signing_key'];
+        $webhookSigningKey = $options['data']['mailer_omnivery_webhook_signing_key'];
         if (strlen($webhookSigningKey) > 4) {
             $webhookSigningKey = '***'.substr($webhookSigningKey, -3, 4);
         } else {
@@ -93,10 +93,10 @@ class ConfigType extends AbstractType
         }
 
         $builder->add(
-            'mailer_mailgun_webhook_signing_key',
+            'mailer_omnivery_webhook_signing_key',
             TextType::class,
             [
-                'label'      => 'mautic.mailgunmailer.form.global.skey',
+                'label'      => 'mautic.omniverymailer.form.global.skey',
                 'label_attr' => ['class' => 'control-label'],
                 'attr'       => [
                     'class'   => 'form-control',
@@ -114,10 +114,10 @@ class ConfigType extends AbstractType
         // Add new account
 
         $builder->add(
-            'mailer_mailgun_new_host',
+            'mailer_omnivery_new_host',
             TextType::class,
             [
-                'label'      => 'mautic.mailgunmailer.form.new.host',
+                'label'      => 'mautic.omniverymailer.form.new.host',
                 'label_attr' => ['class' => 'control-label'],
                 'attr'       => [
                     'class'   => 'form-control',
@@ -132,10 +132,10 @@ class ConfigType extends AbstractType
         );
 
         $builder->add(
-            'mailer_mailgun_new_api_key',
+            'mailer_omnivery_new_api_key',
             TextType::class,
             [
-                'label'      => 'mautic.mailgunmailer.form.new.key',
+                'label'      => 'mautic.omniverymailer.form.new.key',
                 'label_attr' => ['class' => 'control-label'],
                 'attr'       => [
                     'class'   => 'form-control',
@@ -149,15 +149,15 @@ class ConfigType extends AbstractType
             ]
         );
 
-        $accounts = $this->coreParametersHelper->get('mailer_mailgun_accounts', []);
+        $accounts = $this->coreParametersHelper->get('mailer_omnivery_accounts', []);
         $i        = 0;
         foreach ($accounts as $domain => $details) {
             // Host
             $builder->add(
-                sprintf('mailer_mailgun_account_%d', $i),
-                MailgunAccountType::class,
+                sprintf('mailer_omnivery_account_%d', $i),
+                OmniveryAccountType::class,
                 [
-                    'label'      => 'mautic.mailgunmailer.form.account',
+                    'label'      => 'mautic.omniverymailer.form.account',
                     'label_attr' => ['class' => 'control-label'],
                     'attr'       => [
                         'class'   => 'form-control',
@@ -184,6 +184,6 @@ class ConfigType extends AbstractType
      */
     public function getBlockPrefix()
     {
-        return 'mailgunconfig';
+        return 'omniveryconfig';
     }
 }

@@ -17,12 +17,12 @@ Move to plugins directory of your Mautic installation & clone repository.
 
 ```bash
 cd <mautic-dir>/plugins
-git clone <repo-url> MauticMailgunMailerBundle
-cd MauticMailgunMailerBundle
+git clone <repo-url> MauticOmniveryMailerBundle
+cd MauticOmniveryMailerBundle
 composer install
 ```
 
-Create plugin enviorment file to specifiy your global config. Parameters for configruation can be found in your Mailgun Account.
+Create plugin enviorment file to specifiy your global config. Parameters for configruation can be found in your Omnivery Account.
 
 ```bash
 cp plugin-env.php.example plugin-env.php
@@ -63,7 +63,7 @@ Pretty much the same as installing procedure only make sure you use `--env=prod`
 - You should be able to edit all fields for specific domain **with the exception of host**. If you want to edit host field you will have to delete current configuration and add new one.
 - To ensure that bounced emails are properly showed on Mautic graphs make sure you add custom header with name: `TOTTGROUPID` value of this field must be equivalent to email id (you can see email id in the link when you open specific record from Channels > Emails list). See the image below for an example.
 
-**Always double check that plugin is selecting expected Mailgun domain when you add new Mailgun host.**
+**Always double check that plugin is selecting expected Omnivery domain when you add new Omnivery host.**
 
 ## Built With
 

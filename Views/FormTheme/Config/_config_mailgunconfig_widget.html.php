@@ -11,7 +11,7 @@
 $domainAccounts = [];
 $fieldNames     = \array_keys($form->children);
 foreach ($fieldNames as $name) {
-    if (0 !== strpos($name, 'mailer_mailgun_account_')) {
+    if (0 !== strpos($name, 'mailer_omnivery_account_')) {
         continue;
     }
 
@@ -24,27 +24,27 @@ foreach ($fieldNames as $name) {
 
 <div class="panel panel-primary">
     <div class="panel-heading">
-        <h3 class="panel-title"><?php echo $view['translator']->trans('mautic.config.tab.mailgunconfig.global'); ?></h3>
+        <h3 class="panel-title"><?php echo $view['translator']->trans('mautic.config.tab.omniveryconfig.global'); ?></h3>
     </div>
     <div class="panel-body">
         <div class="row">
             <div class="col-md-6">
-                <?php echo $view['form']->row($form->children['mailer_mailgun_batch_recipient_count']); ?>
+                <?php echo $view['form']->row($form->children['mailer_omnivery_batch_recipient_count']); ?>
             </div>
         </div>
         <div class="row">
             <div class="col-md-6">
-                <?php echo $view['form']->row($form->children['mailer_mailgun_max_batch_limit']); ?>
+                <?php echo $view['form']->row($form->children['mailer_omnivery_max_batch_limit']); ?>
             </div>
         </div>
         <div class="row">
             <div class="col-md-6">
-                <?php echo $view['form']->row($form->children['mailer_mailgun_region']); ?>
+                <?php echo $view['form']->row($form->children['mailer_omnivery_region']); ?>
             </div>
         </div>
         <div class="row">
             <div class="col-md-6">
-                <?php echo $view['form']->row($form->children['mailer_mailgun_webhook_signing_key']); ?>
+                <?php echo $view['form']->row($form->children['mailer_omnivery_webhook_signing_key']); ?>
             </div>
         </div>
     </div>
@@ -54,31 +54,31 @@ foreach ($fieldNames as $name) {
 <!-- begin: new domain -->
 <div class="panel panel-primary">
     <div class="panel-heading">
-        <h3 class="panel-title"><?php echo $view['translator']->trans('mautic.config.tab.mailgunconfig.new_domain'); ?></h3>
+        <h3 class="panel-title"><?php echo $view['translator']->trans('mautic.config.tab.omniveryconfig.new_domain'); ?></h3>
     </div>
     <div class="panel-body">
         <div class="row">
             <div class="col-md-6">
-                <?php echo $view['form']->row($form->children['mailer_mailgun_new_host']); ?>
+                <?php echo $view['form']->row($form->children['mailer_omnivery_new_host']); ?>
             </div>
         </div>
 
         <div class="row">
             <div class="col-md-6">
-                <?php echo $view['form']->row($form->children['mailer_mailgun_new_api_key']); ?>
+                <?php echo $view['form']->row($form->children['mailer_omnivery_new_api_key']); ?>
             </div>
         </div>
         
     </div>
 </div> <!-- end: new domain -->
 
-<!-- begin: Mailgun Accounts -->
+<!-- begin: Omnivery Accounts -->
 <?php foreach ($domainAccounts as $accountKey) { ?>
     
     <?php $domain = $form->children[$accountKey]['host']->vars['value']; ?>
     <div class="panel panel-primary">
     <div class="panel-heading">
-        <h3 class="panel-title"><?php echo $view['translator']->trans('mautic.mailgunmailer.domain_config').$domain; ?></h3>
+        <h3 class="panel-title"><?php echo $view['translator']->trans('mautic.omniverymailer.domain_config').$domain; ?></h3>
     </div>
     <div class="panel-body">
         <div class="row">
@@ -106,5 +106,5 @@ foreach ($fieldNames as $name) {
         </div>
 
     </div>
-</div> <!-- end: Mailgun Accounts  -->
+</div> <!-- end: Omnivery Accounts  -->
 <?php } ?>

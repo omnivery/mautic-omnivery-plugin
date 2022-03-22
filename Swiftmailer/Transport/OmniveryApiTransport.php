@@ -16,7 +16,7 @@ use Symfony\Component\Translation\TranslatorInterface;
 
 class OmniveryApiTransport extends AbstractTokenArrayTransport implements \Swift_Transport, CallbackTransportInterface
 {
-    private $host = 'mg-api.omnivery.dev';
+    private $host = 'mg-api.omnivery.com';
 
     /**
      * @var int
@@ -68,7 +68,7 @@ class OmniveryApiTransport extends AbstractTokenArrayTransport implements \Swift
 
         // $parts[1] should contain top level domain.
         $this->accountDomain = $parts[1];
-        $this->accountConfig = $this->coreParametersHelper->get('mailer_mailgun_accounts');
+        $this->accountConfig = $this->coreParametersHelper->get('mailer_omnivery_accounts');
 
         if (isset($this->accountConfig[$this->accountDomain])) {
             $this->accountConfig = $this->accountConfig[$this->accountDomain];
@@ -280,7 +280,7 @@ class OmniveryApiTransport extends AbstractTokenArrayTransport implements \Swift
     /**
      * Return the max number of to addresses allowed per batch.  If there is no limit, return 0.
      *
-     * @see https://help.mailgun.com/hc/en-us/articles/203068914-What-Are-the-Differences-Between-the-Free-and-Flex-Plans-
+     * @see https://help.omnivery.com/hc/en-us/articles/203068914-What-Are-the-Differences-Between-the-Free-and-Flex-Plans-
      *      there is limit depending on your account, and you can change it in configuration for this plugin
      *      Free plan requires 300 messages per day
      */
@@ -292,7 +292,7 @@ class OmniveryApiTransport extends AbstractTokenArrayTransport implements \Swift
     /**
      * Get the count for the max number of recipients per batch.
      *
-     * @see https://help.mailgun.com/hc/en-us/articles/203068914-What-Are-the-Differences-Between-the-Free-and-Flex-Plans-
+     * @see https://help.omnivery.com/hc/en-us/articles/203068914-What-Are-the-Differences-Between-the-Free-and-Flex-Plans-
      *      5 Authorized Recipients for free plan and no limit for Flex Plan
      *
      * @param int    $toBeAdded Number of emails about to be added
@@ -337,7 +337,7 @@ class OmniveryApiTransport extends AbstractTokenArrayTransport implements \Swift
         $postData = json_decode($request->getContent(), true);
 
         if (is_array($postData) && isset($postData['event_data'])) {
-            // Mailgun API callback
+            // Omnivery API callback
             $events = [
                 $postData['event_data'],
             ];
@@ -463,7 +463,7 @@ class OmniveryApiTransport extends AbstractTokenArrayTransport implements \Swift
     private function getEndpoint(): string
     {
         //return str_replace('%region_dot%', 'us' !== ($this->getRegion() ?: 'us') ? $this->getRegion().'.' : '', $this->host);
-        return $this->host;
+        return $this->coreParametersHelper->get('mailer_omnivery_host', $this->host);
     }
 
     private function getMessage($message): array
@@ -471,7 +471,7 @@ class OmniveryApiTransport extends AbstractTokenArrayTransport implements \Swift
         $this->message = $message;
         $metadata      = $this->getMetadata();
 
-        $mauticTokens = $tokenReplace = $mailgunTokens = [];
+        $mauticTokens = $tokenReplace = $omniveryTokens = [];
         if (!empty($metadata)) {
             $metadataSet  = reset($metadata);
             $tokens       = (!empty($metadataSet['tokens'])) ? $metadataSet['tokens'] : [];
@@ -479,7 +479,7 @@ class OmniveryApiTransport extends AbstractTokenArrayTransport implements \Swift
             foreach ($tokens as $search => $token) {
                 $tokenKey               = preg_replace('/[^\da-z]/i', '_', trim($search, '{}'));
                 $tokenReplace[$search]  = '%recipient.'.$tokenKey.'%';
-                $mailgunTokens[$search] = $tokenKey;
+                $omniveryTokens[$search] = $tokenKey;
             }
         }
 
@@ -492,7 +492,7 @@ class OmniveryApiTransport extends AbstractTokenArrayTransport implements \Swift
             $recipients[]                                    = $recipient;
             $messageArray['recipient-variables'][$recipient] = [];
             foreach ($mailData['tokens'] as $token => $tokenData) {
-                $messageArray['recipient-variables'][$recipient][$mailgunTokens[$token]] = $tokenData;
+                $messageArray['recipient-variables'][$recipient][$omniveryTokens[$token]] = $tokenData;
             }
         }
 

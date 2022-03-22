@@ -19,7 +19,7 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Validator\Constraints\NotBlank;
 
-class MailgunAccountType extends AbstractType
+class OmniveryAccountType extends AbstractType
 {
     private $coreParametersHelper;
 
@@ -34,7 +34,7 @@ class MailgunAccountType extends AbstractType
             'host',
             TextType::class,
             [
-                'label'      => 'mautic.mailgunmailer.form.new.host',
+                'label'      => 'mautic.omniverymailer.form.new.host',
                 'label_attr' => ['class' => 'control-label'],
                 'attr'       => [
                     'class'   => 'form-control',
@@ -58,7 +58,7 @@ class MailgunAccountType extends AbstractType
             'api_key',
             TextType::class,
             [
-                'label'      => 'mautic.mailgunmailer.form.new.key',
+                'label'      => 'mautic.omniverymailer.form.new.key',
                 'label_attr' => [
                     'class' => 'control-label', ],
                 'attr'       => [
@@ -78,7 +78,7 @@ class MailgunAccountType extends AbstractType
             'delete',
             CheckboxType::class,
             [
-                'label'      => 'mautic.mailgunmailer.form.new.delete',
+                'label'      => 'mautic.omniverymailer.form.new.delete',
                 'label_attr' => [
                     'class' => 'control-label',
                 ],
@@ -91,13 +91,13 @@ class MailgunAccountType extends AbstractType
 
         $region = $options['data']['region'] ?? '';
         if (!strlen($region)) {
-            $region = $this->coreParametersHelper->get('mailer_mailgun_region');
+            $region = $this->coreParametersHelper->get('mailer_omnivery_region');
         }
         $builder->add(
             'region',
             TextType::class,
             [
-                'label'      => 'mautic.mailgunmailer.form.new.region',
+                'label'      => 'mautic.omniverymailer.form.new.region',
                 'label_attr' => ['class' => 'control-label'],
                 'attr'       => [
                     'class'   => 'form-control',
@@ -118,6 +118,6 @@ class MailgunAccountType extends AbstractType
      */
     public function getBlockPrefix()
     {
-        return 'mailgunconfig_account';
+        return 'omniveryconfig_account';
     }
 }

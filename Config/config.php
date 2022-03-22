@@ -19,7 +19,7 @@ return [
     'services' => [
         'forms' => [
             'mautic.omnivery.form.type.account' => [
-                'class'     => \MauticPlugin\OmniveryMailerBundle\Form\Type\MailgunAccountType::class,
+                'class'     => \MauticPlugin\OmniveryMailerBundle\Form\Type\OmniveryAccountType::class,
                 'arguments' => [
                     'mautic.helper.core_parameters',
                 ],
@@ -59,16 +59,16 @@ return [
                     'mautic.email.model.transport_callback',
                     'mautic.omnivery.guzzle.client',
                     'translator',
-                    '%mautic.mailer_mailgun_max_batch_limit%',
-                    '%mautic.mailer_mailgun_batch_recipient_count%',
-                    '%mautic.mailer_mailgun_webhook_signing_key%',
+                    '%mautic.mailer_omnivery_max_batch_limit%',
+                    '%mautic.mailer_omnivery_batch_recipient_count%',
+                    '%mautic.mailer_omnivery_webhook_signing_key%',
                     'monolog.logger.mautic',
                     'mautic.helper.core_parameters',
                 ],
                 'methodCalls' => [
                     'setApiKey' => ['%mautic.mailer_api_key%'],
                     'setDomain' => ['%mautic.mailer_host%'],
-                    'setRegion' => ['%mautic.mailer_mailgun_region%'],
+                    'setRegion' => ['%mautic.mailer_omnivery_region%'],
                 ],
                 'tag'          => 'mautic.email_transport',
                 'tagArguments' => [
@@ -84,9 +84,10 @@ return [
     ],
 
     'parameters' => [
-        'mailer_mailgun_max_batch_limit'       => \MauticPlugin\OmniveryMailerBundle\Env\MAX_BATCH_LIMIT,
-        'mailer_mailgun_batch_recipient_count' => \MauticPlugin\OmniveryMailerBundle\Env\BATCH_RECIPIENT_COUNT,
-        'mailer_mailgun_region'                => \MauticPlugin\OmniveryMailerBundle\Env\REGION,
-        'mailer_mailgun_webhook_signing_key'   => \MauticPlugin\OmniveryMailerBundle\Env\WEBHOOK_SIGNING_KEY,
+        'mailer_omnivery_max_batch_limit'       => \MauticPlugin\OmniveryMailerBundle\Env\MAX_BATCH_LIMIT,
+        'mailer_omnivery_batch_recipient_count' => \MauticPlugin\OmniveryMailerBundle\Env\BATCH_RECIPIENT_COUNT,
+        'mailer_omnivery_region'                => \MauticPlugin\OmniveryMailerBundle\Env\REGION,
+        'mailer_omnivery_webhook_signing_key'   => \MauticPlugin\OmniveryMailerBundle\Env\WEBHOOK_SIGNING_KEY,
+        'mailer_omnivery_host'                 => \MauticPlugin\OmniveryMailerBundle\Env\HOST,
     ],
 ];
