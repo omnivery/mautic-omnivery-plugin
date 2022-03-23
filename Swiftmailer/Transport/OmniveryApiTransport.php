@@ -529,7 +529,7 @@ class OmniveryApiTransport extends AbstractTokenArrayTransport implements \Swift
         }
 
         if (isset($leadData['unsubscribe_url'])) {
-            $preparedMessage['headers']['List-Unsubscribe'] = $leadData['unsubscribe_url'];
+            $preparedMessage['headers']['List-Unsubscribe'] = '<' . $leadData['unsubscribe_url'] . '>';
         }
 
         return $preparedMessage;
