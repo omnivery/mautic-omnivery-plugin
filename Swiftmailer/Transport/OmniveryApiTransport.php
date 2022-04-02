@@ -252,15 +252,22 @@ class OmniveryApiTransport extends AbstractTokenArrayTransport implements \Swift
                 ]
             );
 
-            if (Response::HTTP_OK !== $response->getStatusCode()) {
-                if ('application/json' === $response->getHeaders(false)['content-type'][0]) {
-                    $result = $response->toArray(false);
-                    throw new \Swift_TransportException('Unable to send an email: '.$result['message'].sprintf(' (code %d).', $response->getStatusCode()), $response);
-                }
+            switch ($response->getStatusCode()) {
+                case Response::HTTP_OK:
+                    // Everything OK, break the switch statement.
+                    break;
 
-                throw new \Swift_TransportException('Unable to send an email: '.$response->getContent(false).sprintf(' (code %d).', $response->getStatusCode()), $response);
+                default:
+                    if ('application/json' === $response->getHeaders(false)['content-type'][0]) {
+                        $result = $response->toArray(false);
+                        throw new \Swift_TransportException('Unable to send an email: '.$result['message'].sprintf(' (code %d).', $response->getStatusCode()), $response);
+                    }
+
+                    throw new \Swift_TransportException('Unable to send an email: '.$response->getContent(false).sprintf(' (code %d).', $response->getStatusCode()), $response);
+                    break;  // Break here does not really have the effect - its placed here just because of code consistency.
             }
 
+            // Message successfully sent.
             if ($evt) {
                 $evt->setResult(\Swift_Events_SendEvent::RESULT_SUCCESS);
                 $evt->setFailedRecipients($failedRecipients);
