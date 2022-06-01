@@ -389,7 +389,7 @@ class OmniveryApiTransport extends AbstractTokenArrayTransport implements \Swift
 
                         case 'temporary':
                         case 'softbounce':
-                            $type = DoNotContact::BOUNCED;
+                            $type            = DoNotContact::BOUNCED;
                             $canUseChannelId = false;
                             break;
 
@@ -428,7 +428,7 @@ class OmniveryApiTransport extends AbstractTokenArrayTransport implements \Swift
                 }
             }
 
-            if ($channelId !== null && $canUseChannelId) {
+            if (null !== $channelId && $canUseChannelId) {
                 $this->transportCallback->addFailureByAddress($event['recipient'], $reason, $type, $channelId);
             } else {
                 $this->transportCallback->addFailureByAddress($event['recipient'], $reason, $type, null);
@@ -474,8 +474,8 @@ class OmniveryApiTransport extends AbstractTokenArrayTransport implements \Swift
             $tokens       = (!empty($metadataSet['tokens'])) ? $metadataSet['tokens'] : [];
             $mauticTokens = array_keys($tokens);
             foreach ($tokens as $search => $token) {
-                $tokenKey               = preg_replace('/[^\da-z]/i', '_', trim($search, '{}'));
-                $tokenReplace[$search]  = '%recipient.'.$tokenKey.'%';
+                $tokenKey                = preg_replace('/[^\da-z]/i', '_', trim($search, '{}'));
+                $tokenReplace[$search]   = '%recipient.'.$tokenKey.'%';
                 $omniveryTokens[$search] = $tokenKey;
             }
         }
@@ -536,7 +536,7 @@ class OmniveryApiTransport extends AbstractTokenArrayTransport implements \Swift
         }
 
         if (isset($leadData['unsubscribe_url'])) {
-            $preparedMessage['headers']['List-Unsubscribe'] = '<' . $leadData['unsubscribe_url'] . '>';
+            $preparedMessage['headers']['List-Unsubscribe'] = '<'.$leadData['unsubscribe_url'].'>';
         }
 
         return $preparedMessage;

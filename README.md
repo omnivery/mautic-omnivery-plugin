@@ -1,4 +1,4 @@
-# Omnivery API plugin for Mautic v3
+# Omnivery API plugin for Mautic v4
 
 Plugin provides integration with Omnivery so you can send email messages from Mautic via API using your domains.
 
@@ -8,8 +8,8 @@ Plugin provides integration with Omnivery so you can send email messages from Ma
 
 ### Prerequisites
 
-- Project was tested on Mautic 4.2.0
-- During development having composer 1 setup can be handy to run scripts in `composer.json`.
+- Project was tested on Mautic 4.3.1
+- During development having composer setup can be handy to run scripts in `composer.json`.
 
 ### Installing
 
@@ -58,17 +58,13 @@ Pretty much the same as installing procedure only make sure you use `--env=prod`
 ## Documentation
 
 - Choose Omnivery Api as the mail service, in Mautic Configuration > Email Settings. Enter default host (domain) and api key. The details you set on this tab will be used if configuration for specific domain cannot be found.
-- Which of your domains will be used by this plugin to send the message depends on from field of your email.
-- You can add more domains and api keys on Omnivery-multi Domains tab in Mautic Configuration.
-- You should be able to edit all fields for specific domain **with the exception of host**. If you want to edit host field you will have to delete current configuration and add new one.
-- To ensure that bounced emails are properly showed on Mautic graphs make sure you add custom header with name: `TOTTGROUPID` value of this field must be equivalent to email id (you can see email id in the link when you open specific record from Channels > Emails list). See the image below for an example.
 
 **Always double check that plugin is selecting expected Omnivery domain when you add new Omnivery host.**
 
 ## Built With
 
 - [Mautic](https://github.com/mautic/mautic) - Marketing Automation Tool
-- [Composer 1](https://getcomposer.org/) - Dependency Management
+- [Composer](https://getcomposer.org/) - Dependency Management
 
 ## Contributing
 
@@ -78,7 +74,7 @@ Pretty much the same as installing procedure only make sure you use `--env=prod`
 
 ## Versioning
 
-\[todo\]
+This project is using [Semantic Versioning](https://semver.org/).
 
 ## Authors
 
@@ -88,4 +84,3 @@ This project was adapated & is maintained by [Matic Zagmajster](http://maticzagm
 
 This project is licensed under the GPL-3.0 License see the `LICENSE` file for details.
 
-## Acknowledgments

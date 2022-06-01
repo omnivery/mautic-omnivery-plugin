@@ -93,7 +93,7 @@ class ConfigSubscriber implements EventSubscriberInterface
         ]);
 
         // We cant ever use setting with mailer_is_owner to yes so make sure its always to No (request is validated only if previously whitelisted domain is used).
-        $allConfig = $event->getConfig();
+        $allConfig                    = $event->getConfig();
         $allConfig['mailer_is_owner'] = 0;
         $event->setConfig($allConfig, 'mailer_is_owner');
 

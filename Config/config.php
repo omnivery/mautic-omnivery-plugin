@@ -84,10 +84,9 @@ return [
     ],
 
     'parameters' => [
-        'mailer_omnivery_max_batch_limit'       => \MauticPlugin\OmniveryMailerBundle\Env\MAX_BATCH_LIMIT,
-        'mailer_omnivery_batch_recipient_count' => \MauticPlugin\OmniveryMailerBundle\Env\BATCH_RECIPIENT_COUNT,
-        'mailer_omnivery_region'                => \MauticPlugin\OmniveryMailerBundle\Env\REGION,
-        'mailer_omnivery_webhook_signing_key'   => \MauticPlugin\OmniveryMailerBundle\Env\WEBHOOK_SIGNING_KEY,
-        'mailer_omnivery_host'                 => \MauticPlugin\OmniveryMailerBundle\Env\HOST,
+        'mailer_omnivery_max_batch_limit'       => \MauticPlugin\OmniveryMailerBundle\Env\MAX_BATCH_LIMIT, // *
+        'mailer_omnivery_batch_recipient_count' => \MauticPlugin\OmniveryMailerBundle\Env\BATCH_RECIPIENT_COUNT,  // *
+        'mailer_omnivery_webhook_signing_key'   => \MauticPlugin\OmniveryMailerBundle\Env\WEBHOOK_SIGNING_KEY,  // *
+        'mailer_omnivery_host'                  => \MauticPlugin\OmniveryMailerBundle\Env\HOST,  // *
     ],
 ];
