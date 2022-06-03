@@ -1,5 +1,5 @@
 {
-    "name": "mautic/omnivery-mailer-bundle",
+    "name": "mzagmajster/omnivery-mailer-bundle",
     "description": "Integrate Swiftmailer transport for Omnivery API",
     "type": "mautic-plugin",
     "keywords": [
