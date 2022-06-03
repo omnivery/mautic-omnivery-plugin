@@ -67,24 +67,6 @@ class ConfigType extends AbstractType
             ]
         );
 
-        $builder->add(
-            'mailer_omnivery_region',
-            TextType::class,
-            [
-                'label'      => 'mautic.omniverymailer.form.global.region',
-                'label_attr' => ['class' => 'control-label'],
-                'attr'       => [
-                    'class'   => 'form-control',
-                    // 'tooltip' => 'mautic.asset.config.form.max.size.tooltip',
-                    ],
-                'constraints' => [
-                    new NotBlank([
-                        'message' => 'mautic.core.value.required',
-                    ]),
-                ],
-            ]
-        );
-
         $webhookSigningKey = $options['data']['mailer_omnivery_webhook_signing_key'];
         if (strlen($webhookSigningKey) > 4) {
             $webhookSigningKey = '***'.substr($webhookSigningKey, -3, 4);
@@ -110,73 +92,6 @@ class ConfigType extends AbstractType
                 'data' => $webhookSigningKey,
             ]
         );
-
-        // Add new account
-
-        $builder->add(
-            'mailer_omnivery_new_host',
-            TextType::class,
-            [
-                'label'      => 'mautic.omniverymailer.form.new.host',
-                'label_attr' => ['class' => 'control-label'],
-                'attr'       => [
-                    'class'   => 'form-control',
-                    // 'tooltip' => 'mautic.asset.config.form.max.size.tooltip',
-                    ],
-                'constraints' => [
-                    /*new NotBlank([
-                        'message' => 'mautic.core.value.required',
-                    ]),*/
-                ],
-            ]
-        );
-
-        $builder->add(
-            'mailer_omnivery_new_api_key',
-            TextType::class,
-            [
-                'label'      => 'mautic.omniverymailer.form.new.key',
-                'label_attr' => ['class' => 'control-label'],
-                'attr'       => [
-                    'class'   => 'form-control',
-                    // 'tooltip' => 'mautic.asset.config.form.max.size.tooltip',
-                    ],
-                'constraints' => [
-                    /*new NotBlank([
-                        'message' => 'mautic.core.value.required',
-                    ]),*/
-                ],
-            ]
-        );
-
-        $accounts = $this->coreParametersHelper->get('mailer_omnivery_accounts', []);
-        $i        = 0;
-        foreach ($accounts as $domain => $details) {
-            // Host
-            $builder->add(
-                sprintf('mailer_omnivery_account_%d', $i),
-                OmniveryAccountType::class,
-                [
-                    'label'      => 'mautic.omniverymailer.form.account',
-                    'label_attr' => ['class' => 'control-label'],
-                    'attr'       => [
-                        'class'   => 'form-control',
-                        // 'tooltip' => 'mautic.asset.config.form.max.size.tooltip',
-                        ],
-                    'constraints' => [
-                        /*new NotBlank([
-                            'message' => 'mautic.core.value.required',
-                        ]),*/
-                    ],
-                    'data' => $details,
-                ]
-            );
-
-            ++$i;
-        }
-        /*echo '<pre>';
-        var_dump($accounts);
-        echo '</pre>';*/
     }
 
     /**

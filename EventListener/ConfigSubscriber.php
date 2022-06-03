@@ -80,8 +80,8 @@ class ConfigSubscriber implements EventSubscriberInterface
             'bundle'     => 'OmniveryMailerBundle',
             'formAlias'  => 'omniveryconfig',
             'formType'   => ConfigType::class,
-            'formTheme'  => 'MauticOmniveryMailerBundle:FormTheme\Config',
-            'parameters' => $event->getParametersFromConfig('MauticOmniveryMailerBundle'),
+            'formTheme'  => 'OmniveryMailerBundle:FormTheme\Config',
+            'parameters' => $event->getParametersFromConfig('OmniveryMailerBundle'),
         ]);
     }
 

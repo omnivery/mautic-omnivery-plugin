@@ -40,13 +40,6 @@ return [
                     'mautic.helper.core_parameters',
                 ],
             ],
-
-            'mautic.omnivery.subscriber.email' => [
-                'class'     => \MauticPlugin\OmniveryMailerBundle\EventListener\EmailSubscriber::class,
-                'arguments' => [
-                    'mautic.email.model.email',
-                ],
-            ],
         ],
 
         'integrations' => [],
