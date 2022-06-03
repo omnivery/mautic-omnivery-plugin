@@ -14,7 +14,7 @@ return [
     'name'        => 'OmniveryMailer',
     'description' => 'Integrate Swiftmailer transport for Omnivery API',
     'author'      => 'Matic Zagmajster',
-    'version'     => '1.0.0',
+    'version'     => '1.0.1',
 
     'services' => [
         'forms' => [
