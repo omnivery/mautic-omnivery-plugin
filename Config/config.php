@@ -8,8 +8,6 @@
  * @license     GNU/GPLv3 http://www.gnu.org/licenses/gpl-3.0.html
  */
 
-require_once MAUTIC_ROOT_DIR.'/plugins/OmniveryMailerBundle/.plugin-env.php';
-
 return [
     'name'        => 'OmniveryMailer',
     'description' => 'Integrate Swiftmailer transport for Omnivery API',
@@ -76,9 +74,9 @@ return [
     ],
 
     'parameters' => [
-        'mailer_omnivery_max_batch_limit'       => \MauticPlugin\OmniveryMailerBundle\Env\MAX_BATCH_LIMIT, // *
-        'mailer_omnivery_batch_recipient_count' => \MauticPlugin\OmniveryMailerBundle\Env\BATCH_RECIPIENT_COUNT,  // *
-        'mailer_omnivery_webhook_signing_key'   => \MauticPlugin\OmniveryMailerBundle\Env\WEBHOOK_SIGNING_KEY,  // *
-        'mailer_omnivery_host'                  => \MauticPlugin\OmniveryMailerBundle\Env\HOST,  // *
+        'mailer_omnivery_max_batch_limit'       => 20, 
+        'mailer_omnivery_batch_recipient_count' => 20,
+        'mailer_omnivery_webhook_signing_key'   => '',
+        'mailer_omnivery_host'                  => 'mg-api.omnivery.net',
     ],
 ];
