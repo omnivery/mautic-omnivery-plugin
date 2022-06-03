@@ -22,11 +22,11 @@ cd MauticOmniveryMailerBundle
 composer install
 ```
 
-Create plugin enviorment file to specifiy your global config. Parameters for configruation can be found in your Omnivery Account.
+Create plugin enviorment file to specifiy your global config. Parameters for configruation can be found in your Omnivery Account. Typically you will want to update at least webhook signing key, but you can choose to do that via Mautic web GUI.
 
 ```bash
 composer createEnvFile
-# edit .plugin-env.php with values from your account.
+# edit .plugin-env.php with values from your Omnivery account.
 ```
 
 Install/reload the plugin
@@ -58,6 +58,8 @@ Pretty much the same as installing procedure only make sure you use `--env=prod`
 ## Documentation
 
 - Choose Omnivery Api as the mail service, in Mautic Configuration > Email Settings. Enter default host (domain) and api key. The details you set on this tab will be used if configuration for specific domain cannot be found.
+
+- Under Configuration -> Omnivery Settings check and update: Webhook Signing Key field with value from your Omnivery account.
 
 **Always double check that plugin is selecting expected Omnivery domain when you add new Omnivery host.**
 
