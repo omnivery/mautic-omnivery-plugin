@@ -31,7 +31,10 @@
     "scripts": {
         "lint": "vendor/bin/parallel-lint --exclude ./vendor .",
         "checkcs": "php-cs-fixer fix --config=./.php_cs.dist.php --diff --dry-run",
-        "fixcs": "php-cs-fixer fix --config=./.php_cs.dist.php"
+        "fixcs": "php-cs-fixer fix --config=./.php_cs.dist.php",
+        "createEnvFile": "cp plugin-env.php.example .plugin-env.php",
+        "post-install-cmd": [
+            "@createEnvFile"
+        ]
     }
 }
-

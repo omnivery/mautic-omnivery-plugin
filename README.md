@@ -25,8 +25,8 @@ composer install
 Create plugin enviorment file to specifiy your global config. Parameters for configruation can be found in your Omnivery Account.
 
 ```bash
-cp plugin-env.php.example plugin-env.php
-# edit plugin-env.php with values from your account.
+composer createEnvFile
+# edit .plugin-env.php with values from your account.
 ```
 
 Install/reload the plugin
