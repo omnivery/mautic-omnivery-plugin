@@ -68,7 +68,6 @@ return [
                 'methodCalls' => [
                     'setApiKey' => ['%mautic.mailer_api_key%'],
                     'setDomain' => ['%mautic.mailer_host%'],
-                    'setRegion' => ['%mautic.mailer_omnivery_region%'],
                 ],
                 'tag'          => 'mautic.email_transport',
                 'tagArguments' => [
