@@ -44,28 +44,25 @@ return [
 
         'other' => [
             'mautic.transport.omnivery_api' => [
-                'class'        => \MauticPlugin\OmniveryMailerBundle\Swiftmailer\Transport\OmniveryApiTransport::class,
-                'serviceAlias' => 'swiftmailer.mailer.transport.%s',
+                'class'        => \MauticPlugin\OmniveryMailerBundle\Mailer\Transport\OmniveryApiTransport::class,
                 'arguments'    => [
-                    'mautic.email.model.transport_callback',
-                    'mautic.omnivery.guzzle.client',
-                    'translator',
-                    '%mautic.mailer_omnivery_max_batch_limit%',
-                    '%mautic.mailer_omnivery_batch_recipient_count%',
-                    '%mautic.mailer_omnivery_webhook_signing_key%',
-                    'monolog.logger.mautic',
-                    'mautic.helper.core_parameters',
+                    /*
+                        
+                        'mautic.email.model.transport_callback',
+                        'mautic.omnivery.guzzle.client',
+                        'translator',
+                        '%mautic.mailer_omnivery_max_batch_limit%',
+                        '%mautic.mailer_omnivery_batch_recipient_count%',
+                        '%mautic.mailer_omnivery_webhook_signing_key%',
+                        'monolog.logger.mautic',
+                        'mautic.helper.core_parameters',
+                     */
                 ],
                 'methodCalls' => [
                     'setApiKey' => ['%mautic.mailer_api_key%'],
                     'setDomain' => ['%mautic.mailer_host%'],
                 ],
-                'tag'          => 'mautic.email_transport',
-                'tagArguments' => [
-                    \Mautic\EmailBundle\Model\TransportType::TRANSPORT_ALIAS => 'mautic.email.config.mailer_transport.omnivery_api',
-                    \Mautic\EmailBundle\Model\TransportType::FIELD_HOST      => true,
-                    \Mautic\EmailBundle\Model\TransportType::FIELD_API_KEY   => true,
-                ],
+                'tag'          => 'mautic.mailer_transport',
             ],
             'mautic.omnivery.guzzle.client' => [
                 'class' => 'GuzzleHttp\Client',
