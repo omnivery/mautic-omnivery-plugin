@@ -17,8 +17,8 @@ Move to plugins directory of your Mautic installation & clone repository.
 
 ```bash
 cd <mautic-dir>/plugins
-git clone <repo-url> MauticOmniveryMailerBundle
-cd MauticOmniveryMailerBundle
+git clone <repo-url> OmniveryMailerBundle
+cd OmniveryMailerBundle
 composer install
 ```
 
