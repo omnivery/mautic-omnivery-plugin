@@ -20,30 +20,48 @@ use Mautic\EmailBundle\Mailer\Transport\BounceProcessorInterface;
 use Mautic\EmailBundle\Mailer\Transport\TokenTransportInterface;
 use Mautic\EmailBundle\Mailer\Transport\TokenTransportTrait;
 use Mautic\EmailBundle\Mailer\Transport\UnsubscriptionProcessorInterface;
+use Mautic\EmailBundle\MonitoredEmail\Message;
 use Mautic\EmailBundle\Mailer\Transport\TransportFactory;
+use Mautic\EmailBundle\MonitoredEmail\Exception\UnsubscriptionNotFound;
+use Mautic\EmailBundle\MonitoredEmail\Processor\Unsubscription\UnsubscribedEmail;
+use Mautic\EmailBundle\MonitoredEmail\Processor\Bounce\BouncedEmail;
+use Mautic\EmailBundle\MonitoredEmail\Exception\BounceNotFound;
+
 
 
 /**
  * @author Matic Zagmajster
  */
-class OmniveryApiTransport extends AbstractApiTransport implements BounceProcessorInterface, TokenTransportInterface, UnsubscriptionProcessorInterface
+class OmniveryApiTransport extends AbstractApiTransport implements TokenTransportInterface, BounceProcessorInterface, UnsubscriptionProcessorInterface
 {
+    use TokenTransportTrait;
+
     private const HOST = 'mg-api.omnivery.net';
 
+    private $mauticMailerDsn;
     private $key;
     private $domain;
 
-    public function __construct(string $key, string $domain, HttpClientInterface $client = null, EventDispatcherInterface $dispatcher = null, LoggerInterface $logger = null)
+    public function __construct(string $mauticMailerDsn, 
+        HttpClientInterface $client = null, 
+        EventDispatcherInterface $dispatcher = null, 
+        LoggerInterface $logger = null
+    )
     {
-        $this->key = $key;
-        $this->domain = $domain;
+        $this->mauticMailerDsn = $mauticMailerDsn;
+        $this->key = 'key';
+        $this->domain = '$domain';
 
         parent::__construct($client, $dispatcher, $logger);
     }
 
     public function __toString(): string
     {
-        return sprintf('mautic_omnivery+api://%s?domain=%s', $this->getEndpoint(), $this->domain);
+        return sprintf(
+            'mautic_omnivery+api://%s?domain=%s', 
+            $this->getEndpoint(), 
+            $this->domain
+        );
     }
 
     protected function doSendApi(SentMessage $sentMessage, Email $email, Envelope $envelope): ResponseInterface
@@ -169,18 +187,22 @@ class OmniveryApiTransport extends AbstractApiTransport implements BounceProcess
 
     private function getEndpoint(): ?string
     {
-        return $this->coreParametersHelper->get('mailer_omnivery_host', $this->host);
+        return self::HOST;
     }
 
-    public function verifyCallback(string $token, string $timestamp, string $signature): bool
-    {
-        // check if the timestamp is fresh
-        if (\abs(\time() - $timestamp) > 15) {
-            return false;
-        }
+    // Mautic stuff...
+    public function getMaxBatchLimit(): int {
+        return 50;
+    }
 
-        // returns true if signature is valid
-        return \hash_equals(\hash_hmac('sha256', $timestamp.$token, $this->webhookSigningKey), $signature);
+    public function processBounce(Message $message): BouncedEmail
+    {
+        return new BouncedEmail();
+    }
+
+    public function processUnsubscription(Message $message): UnsubscribedEmail
+    {
+        return new UnsubscribedEmail('contact@email.com', 'test+unsubscribe_123abc@test.com');
     }
 }
 

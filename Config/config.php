@@ -10,7 +10,7 @@
 
 return [
     'name'        => 'OmniveryMailer',
-    'description' => 'Integrate Swiftmailer transport for Omnivery API',
+    'description' => 'Integrate Mailer transport for Omnivery API',
     'author'      => 'Matic Zagmajster',
     'version'     => '1.0.2',
 
@@ -46,21 +46,19 @@ return [
             'mautic.transport.omnivery_api' => [
                 'class'        => \MauticPlugin\OmniveryMailerBundle\Mailer\Transport\OmniveryApiTransport::class,
                 'arguments'    => [
+                    '%mautic.mailer_dsn%',
+                    'mautic.omnivery.guzzle.client',
+                    'event_dispatcher',
+                    'monolog.logger.mautic',
                     /*
-                        
-                        'mautic.email.model.transport_callback',
-                        'mautic.omnivery.guzzle.client',
-                        'translator',
-                        '%mautic.mailer_omnivery_max_batch_limit%',
-                        '%mautic.mailer_omnivery_batch_recipient_count%',
-                        '%mautic.mailer_omnivery_webhook_signing_key%',
-                        'monolog.logger.mautic',
-                        'mautic.helper.core_parameters',
+                    'mautic.email.model.transport_callback',
+                    'translator',
+                    '%mautic.mailer_omnivery_max_batch_limit%',
+                    '%mautic.mailer_omnivery_batch_recipient_count%',
+                    '%mautic.mailer_omnivery_webhook_signing_key%',
+                    
+                    'mautic.helper.core_parameters',
                      */
-                ],
-                'methodCalls' => [
-                    'setApiKey' => ['%mautic.mailer_api_key%'],
-                    'setDomain' => ['%mautic.mailer_host%'],
                 ],
                 'tag'          => 'mautic.mailer_transport',
             ],
