@@ -1,12 +1,4 @@
 <?php
-/*
- * @copyright   2020. All rights reserved
- * @author      Stanislav Denysenko<stascrack@gmail.com>
- *
- * @link        https://github.com/stars05
- *
- * @license     GNU/GPLv3 http://www.gnu.org/licenses/gpl-3.0.html
- */
 
 return [
     'name'        => 'OmniveryMailer',
@@ -56,7 +48,7 @@ return [
                     '%mautic.mailer_omnivery_max_batch_limit%',
                     '%mautic.mailer_omnivery_batch_recipient_count%',
                     '%mautic.mailer_omnivery_webhook_signing_key%',
-                    
+
                     'mautic.helper.core_parameters',
                      */
                 ],
@@ -69,7 +61,7 @@ return [
     ],
 
     'parameters' => [
-        'mailer_omnivery_max_batch_limit'       => 20, 
+        'mailer_omnivery_max_batch_limit'       => 20,
         'mailer_omnivery_batch_recipient_count' => 20,
         'mailer_omnivery_webhook_signing_key'   => '',
         'mailer_omnivery_host'                  => 'mg-api.omnivery.net',

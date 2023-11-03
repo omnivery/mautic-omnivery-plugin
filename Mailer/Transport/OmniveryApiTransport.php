@@ -2,6 +2,13 @@
 
 namespace MauticPlugin\OmniveryMailerBundle\Mailer\Transport;
 
+use Mautic\EmailBundle\Mailer\Transport\BounceProcessorInterface;
+use Mautic\EmailBundle\Mailer\Transport\TokenTransportInterface;
+use Mautic\EmailBundle\Mailer\Transport\TokenTransportTrait;
+use Mautic\EmailBundle\Mailer\Transport\UnsubscriptionProcessorInterface;
+use Mautic\EmailBundle\MonitoredEmail\Message;
+use Mautic\EmailBundle\MonitoredEmail\Processor\Bounce\BouncedEmail;
+use Mautic\EmailBundle\MonitoredEmail\Processor\Unsubscription\UnsubscribedEmail;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Mailer\Envelope;
@@ -16,18 +23,6 @@ use Symfony\Contracts\HttpClient\Exception\DecodingExceptionInterface;
 use Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 use Symfony\Contracts\HttpClient\ResponseInterface;
-use Mautic\EmailBundle\Mailer\Transport\BounceProcessorInterface;
-use Mautic\EmailBundle\Mailer\Transport\TokenTransportInterface;
-use Mautic\EmailBundle\Mailer\Transport\TokenTransportTrait;
-use Mautic\EmailBundle\Mailer\Transport\UnsubscriptionProcessorInterface;
-use Mautic\EmailBundle\MonitoredEmail\Message;
-use Mautic\EmailBundle\Mailer\Transport\TransportFactory;
-use Mautic\EmailBundle\MonitoredEmail\Exception\UnsubscriptionNotFound;
-use Mautic\EmailBundle\MonitoredEmail\Processor\Unsubscription\UnsubscribedEmail;
-use Mautic\EmailBundle\MonitoredEmail\Processor\Bounce\BouncedEmail;
-use Mautic\EmailBundle\MonitoredEmail\Exception\BounceNotFound;
-
-
 
 /**
  * @author Matic Zagmajster
@@ -42,15 +37,14 @@ class OmniveryApiTransport extends AbstractApiTransport implements TokenTranspor
     private $key;
     private $domain;
 
-    public function __construct(string $mauticMailerDsn, 
-        HttpClientInterface $client = null, 
-        EventDispatcherInterface $dispatcher = null, 
+    public function __construct(string $mauticMailerDsn,
+        HttpClientInterface $client = null,
+        EventDispatcherInterface $dispatcher = null,
         LoggerInterface $logger = null
-    )
-    {
+    ) {
         $this->mauticMailerDsn = $mauticMailerDsn;
-        $this->key = 'key';
-        $this->domain = '$domain';
+        $this->key             = 'key';
+        $this->domain          = '$domain';
 
         parent::__construct($client, $dispatcher, $logger);
     }
@@ -58,15 +52,15 @@ class OmniveryApiTransport extends AbstractApiTransport implements TokenTranspor
     public function __toString(): string
     {
         return sprintf(
-            'mautic_omnivery+api://%s?domain=%s', 
-            $this->getEndpoint(), 
+            'mautic_omnivery+api://%s?domain=%s',
+            $this->getEndpoint(),
             $this->domain
         );
     }
 
     protected function doSendApi(SentMessage $sentMessage, Email $email, Envelope $envelope): ResponseInterface
     {
-        $body = new FormDataPart($this->getPayload($email, $envelope));
+        $body    = new FormDataPart($this->getPayload($email, $envelope));
         $headers = [];
         foreach ($body->getPreparedHeaders()->all() as $header) {
             $headers[] = $header->toString();
@@ -75,13 +69,13 @@ class OmniveryApiTransport extends AbstractApiTransport implements TokenTranspor
         $endpoint = sprintf('%s/v3/%s/messages', $this->getEndpoint(), urlencode($this->domain));
         $response = $this->client->request('POST', 'https://'.$endpoint, [
             'auth_basic' => 'api:'.$this->key,
-            'headers' => $headers,
-            'body' => $body->bodyToIterable(),
+            'headers'    => $headers,
+            'body'       => $body->bodyToIterable(),
         ]);
 
         try {
             $statusCode = $response->getStatusCode();
-            $result = $response->toArray(false);
+            $result     = $response->toArray(false);
         } catch (DecodingExceptionInterface $e) {
             throw new HttpTransportException('Unable to send an email: '.$response->getContent(false).sprintf(' (code %d).', $statusCode), $response);
         } catch (TransportExceptionInterface $e) {
@@ -100,7 +94,7 @@ class OmniveryApiTransport extends AbstractApiTransport implements TokenTranspor
     private function getPayload(Email $email, Envelope $envelope): array
     {
         $headers = $email->getHeaders();
-        $html = $email->getHtmlBody();
+        $html    = $email->getHtmlBody();
         if (null !== $html && \is_resource($html)) {
             if (stream_get_meta_data($html)['seekable'] ?? false) {
                 rewind($html);
@@ -110,11 +104,11 @@ class OmniveryApiTransport extends AbstractApiTransport implements TokenTranspor
         [$attachments, $inlines, $html] = $this->prepareAttachments($email, $html);
 
         $payload = [
-            'from' => $envelope->getSender()->toString(),
-            'to' => implode(',', $this->stringifyAddresses($this->getRecipients($email, $envelope))),
-            'subject' => $email->getSubject(),
+            'from'       => $envelope->getSender()->toString(),
+            'to'         => implode(',', $this->stringifyAddresses($this->getRecipients($email, $envelope))),
+            'subject'    => $email->getSubject(),
             'attachment' => $attachments,
-            'inline' => $inlines,
+            'inline'     => $inlines,
         ];
         if ($emails = $email->getCc()) {
             $payload['cc'] = implode(',', $this->stringifyAddresses($emails));
@@ -170,9 +164,9 @@ class OmniveryApiTransport extends AbstractApiTransport implements TokenTranspor
                 // replace the cid with just a file name (the only supported way by Omnivery)
                 if ($html) {
                     $filename = $headers->getHeaderParameter('Content-Disposition', 'filename');
-                    $new = basename($filename);
-                    $html = str_replace('cid:'.$filename, 'cid:'.$new, $html);
-                    $p = new \ReflectionProperty($attachment, 'filename');
+                    $new      = basename($filename);
+                    $html     = str_replace('cid:'.$filename, 'cid:'.$new, $html);
+                    $p        = new \ReflectionProperty($attachment, 'filename');
                     $p->setAccessible(true);
                     $p->setValue($attachment, $new);
                 }
@@ -191,7 +185,8 @@ class OmniveryApiTransport extends AbstractApiTransport implements TokenTranspor
     }
 
     // Mautic stuff...
-    public function getMaxBatchLimit(): int {
+    public function getMaxBatchLimit(): int
+    {
         return 50;
     }
 
@@ -205,6 +200,3 @@ class OmniveryApiTransport extends AbstractApiTransport implements TokenTranspor
         return new UnsubscribedEmail('contact@email.com', 'test+unsubscribe_123abc@test.com');
     }
 }
-
-
-
