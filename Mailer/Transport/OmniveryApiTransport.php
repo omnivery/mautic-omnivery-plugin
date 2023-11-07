@@ -33,18 +33,24 @@ class OmniveryApiTransport extends AbstractApiTransport implements TokenTranspor
 
     private const HOST = 'mg-api.omnivery.net';
 
-    private $mauticMailerDsn;
     private $key;
     private $domain;
+    private $logger;
 
-    public function __construct(string $mauticMailerDsn,
-        HttpClientInterface $client = null,
+    public function __construct(
         EventDispatcherInterface $dispatcher = null,
+        HttpClientInterface $client = null,
         LoggerInterface $logger = null
     ) {
-        $this->mauticMailerDsn = $mauticMailerDsn;
+        /**
+         * @todo Get it frm core parameters helper
+         *
+         * @var [type]
+         */
         $this->key             = \getenv('OMNIVERY_DEV_API_KEY');
         $this->domain          = \getenv('OMNIVERY_DEV_DOMAIN');
+
+        $this->logger          = $logger;
 
         parent::__construct($client, $dispatcher, $logger);
     }

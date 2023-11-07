@@ -35,12 +35,21 @@ return [
         'integrations' => [],
 
         'other' => [
+            'mautic.transport.omnivery_factory' => [
+                'class'        => \MauticPlugin\OmniveryMailerBundle\Mailer\Transport\MauticOmniveryTransportFactory::class,
+                'arguments'    => [
+                    'event_dispatcher',
+                    'mautic.omnivery.http.client',
+                    'monolog.logger.mautic',
+                ],
+                'tag'          => 'mailer.transport_factory',
+            ],
+
             'mautic.transport.omnivery_api' => [
                 'class'        => \MauticPlugin\OmniveryMailerBundle\Mailer\Transport\OmniveryApiTransport::class,
                 'arguments'    => [
-                    '%mautic.mailer_dsn%',
-                    'mautic.omnivery.guzzle.client',
                     'event_dispatcher',
+                    'mautic.omnivery.http.client',
                     'monolog.logger.mautic',
                     /*
                     'mautic.email.model.transport_callback',
@@ -54,14 +63,9 @@ return [
                 ],
                 'tag'          => 'mautic.mailer_transport',
             ],
-            'mautic.transport.omnivery_factory' => [
-                'class'        => \MauticPlugin\OmniveryMailerBundle\Mailer\Transport\MauticOmniveryTransportFactory::class,
-                'arguments'    => [],
-                'tag'          => 'mailer.transport_factory',
-            ],
 
-            'mautic.omnivery.guzzle.client' => [
-                'class' => 'GuzzleHttp\Client',
+            'mautic.omnivery.http.client' => [
+                'class' => Symfony\Component\HttpClient\NativeHttpClient::class,
             ],
         ],
     ],
