@@ -1,6 +1,5 @@
 <?php
 
-
 namespace MauticPlugin\OmniveryMailerBundle\Form\Type;
 
 use Mautic\CoreBundle\Helper\CoreParametersHelper;

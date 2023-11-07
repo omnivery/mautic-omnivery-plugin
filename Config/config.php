@@ -54,6 +54,12 @@ return [
                 ],
                 'tag'          => 'mautic.mailer_transport',
             ],
+            'mautic.transport.omnivery_factory' => [
+                'class'        => \MauticPlugin\OmniveryMailerBundle\Mailer\Transport\MauticOmniveryTransportFactory::class,
+                'arguments'    => [],
+                'tag'          => 'mailer.transport_factory',
+            ],
+
             'mautic.omnivery.guzzle.client' => [
                 'class' => 'GuzzleHttp\Client',
             ],

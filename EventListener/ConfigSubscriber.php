@@ -1,6 +1,5 @@
 <?php
 
-
 namespace MauticPlugin\OmniveryMailerBundle\EventListener;
 
 use Mautic\ConfigBundle\ConfigEvents;

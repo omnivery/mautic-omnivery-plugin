@@ -43,8 +43,8 @@ class OmniveryApiTransport extends AbstractApiTransport implements TokenTranspor
         LoggerInterface $logger = null
     ) {
         $this->mauticMailerDsn = $mauticMailerDsn;
-        $this->key             = 'key';
-        $this->domain          = '$domain';
+        $this->key             = \getenv('OMNIVERY_DEV_API_KEY');
+        $this->domain          = \getenv('OMNIVERY_DEV_DOMAIN');
 
         parent::__construct($client, $dispatcher, $logger);
     }
