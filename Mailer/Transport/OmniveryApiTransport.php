@@ -2,13 +2,8 @@
 
 namespace MauticPlugin\OmniveryMailerBundle\Mailer\Transport;
 
-use Mautic\EmailBundle\Mailer\Transport\BounceProcessorInterface;
 use Mautic\EmailBundle\Mailer\Transport\TokenTransportInterface;
 use Mautic\EmailBundle\Mailer\Transport\TokenTransportTrait;
-use Mautic\EmailBundle\Mailer\Transport\UnsubscriptionProcessorInterface;
-use Mautic\EmailBundle\MonitoredEmail\Message;
-use Mautic\EmailBundle\MonitoredEmail\Processor\Bounce\BouncedEmail;
-use Mautic\EmailBundle\MonitoredEmail\Processor\Unsubscription\UnsubscribedEmail;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Mailer\Envelope;
@@ -27,28 +22,47 @@ use Symfony\Contracts\HttpClient\ResponseInterface;
 /**
  * @author Matic Zagmajster
  */
-class OmniveryApiTransport extends AbstractApiTransport implements TokenTransportInterface, BounceProcessorInterface, UnsubscriptionProcessorInterface
+class OmniveryApiTransport extends AbstractApiTransport implements TokenTransportInterface
 {
     use TokenTransportTrait;
 
-    private const HOST = 'mg-api.omnivery.net';
+    public const HOST = 'mg-api.omnivery.net';
 
-    private $key;
-    private $domain;
+    /**
+     * @var LoggerInterface
+     */
     private $logger;
 
+    // Configuration
+
+    /**
+     * @var string
+     */
+    private $key;
+
+    /**
+     * @var string
+     */
+    private $domain;
+
+    /**
+     * @var int
+     */
+    private $maxBatchLimit;
+
     public function __construct(
+        string $host = '',
+        string $key = '',
+        string $domain = '',
+        int $maxBatchLimit = 0,
         EventDispatcherInterface $dispatcher = null,
         HttpClientInterface $client = null,
-        LoggerInterface $logger = null
+        LoggerInterface $logger = null,
     ) {
-        /**
-         * @todo Get it frm core parameters helper
-         *
-         * @var [type]
-         */
-        $this->key             = \getenv('OMNIVERY_DEV_API_KEY');
-        $this->domain          = \getenv('OMNIVERY_DEV_DOMAIN');
+        $this->host            = $host;
+        $this->key             = $key;
+        $this->domain          = $domain;
+        $this->maxBatchLimit   = $maxBatchLimit;
 
         $this->logger          = $logger;
 
@@ -58,7 +72,7 @@ class OmniveryApiTransport extends AbstractApiTransport implements TokenTranspor
     public function __toString(): string
     {
         return sprintf(
-            'mautic_omnivery+api://%s?domain=%s',
+            'mautic+omnivery+api://%s?domain=%s',
             $this->getEndpoint(),
             $this->domain
         );
@@ -187,22 +201,12 @@ class OmniveryApiTransport extends AbstractApiTransport implements TokenTranspor
 
     private function getEndpoint(): ?string
     {
-        return self::HOST;
+        return $this->host;
     }
 
     // Mautic stuff...
     public function getMaxBatchLimit(): int
     {
-        return 50;
-    }
-
-    public function processBounce(Message $message): BouncedEmail
-    {
-        return new BouncedEmail();
-    }
-
-    public function processUnsubscription(Message $message): UnsubscribedEmail
-    {
-        return new UnsubscribedEmail('contact@email.com', 'test+unsubscribe_123abc@test.com');
+        return $this->maxBatchLimit;
     }
 }

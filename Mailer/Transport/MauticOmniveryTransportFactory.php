@@ -4,6 +4,7 @@ namespace MauticPlugin\OmniveryMailerBundle\Mailer\Transport;
 
 use Psr\EventDispatcher\EventDispatcherInterface;
 use Psr\Log\LoggerInterface;
+use Symfony\Component\Mailer\Exception\InvalidArgumentException;
 use Symfony\Component\Mailer\Exception\UnsupportedSchemeException;
 use Symfony\Component\Mailer\Transport\AbstractTransportFactory;
 use Symfony\Component\Mailer\Transport\Dsn;
@@ -30,14 +31,22 @@ final class MauticOmniveryTransportFactory extends AbstractTransportFactory
     public function create(Dsn $dsn): TransportInterface
     {
         $scheme = $dsn->getScheme();
-        /*$user = $this->getUser($dsn);
-        $password = $this->getPassword($dsn);
-        $region = $dsn->getOption('region');
-        $host = 'default' === $dsn->getHost() ? null : $dsn->getHost();
-        $port = $dsn->getPort();*/
 
-        if ('mauticomnivery+api' === $scheme) {
+        if ('mautic+omnivery+api' === $scheme) {
+            $host          = ('default' === $dsn->getHost()) ? OmniveryApiTransport::HOST : $dsn->getHost();
+            $key           =  $dsn->getPassword();
+            $domain        = $dsn->getOption('domain');
+            $maxBatchLimit = $dsn->getOption('maxBatchLimit') ?? 5000;
+
+            if (null === $key || null === $domain) {
+                throw new InvalidArgumentException('Key or domain not set, cannot create OmniveryApiTransport object!');
+            }
+
             return new OmniveryApiTransport(
+                $host,
+                $key,
+                $domain,
+                $maxBatchLimit,
                 $this->dispatcher,
                 $this->client,
                 $this->logger
@@ -49,6 +58,6 @@ final class MauticOmniveryTransportFactory extends AbstractTransportFactory
 
     protected function getSupportedSchemes(): array
     {
-        return ['mauticomnivery+api'];
+        return ['mautic+omnivery+api'];
     }
 }

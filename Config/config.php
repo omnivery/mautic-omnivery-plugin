@@ -30,12 +30,21 @@ return [
                     'mautic.helper.core_parameters',
                 ],
             ],
+
+            'mautic.omnivery.subscriber.callback' => [
+                'class'     => \MauticPlugin\OmniveryMailerBundle\EventListener\CallbackSubscriber::class,
+                'arguments' => [
+                    \Mautic\EmailBundle\Model\TransportCallback::class,
+                    'mautic.helper.core_parameters',
+                    'monolog.logger.mautic',
+                ],
+            ],
         ],
 
         'integrations' => [],
 
         'other' => [
-            'mautic.transport.omnivery_factory' => [
+            'mautic.omnivery.transport_factory' => [
                 'class'        => \MauticPlugin\OmniveryMailerBundle\Mailer\Transport\MauticOmniveryTransportFactory::class,
                 'arguments'    => [
                     'event_dispatcher',
@@ -45,35 +54,11 @@ return [
                 'tag'          => 'mailer.transport_factory',
             ],
 
-            'mautic.transport.omnivery_api' => [
-                'class'        => \MauticPlugin\OmniveryMailerBundle\Mailer\Transport\OmniveryApiTransport::class,
-                'arguments'    => [
-                    'event_dispatcher',
-                    'mautic.omnivery.http.client',
-                    'monolog.logger.mautic',
-                    /*
-                    'mautic.email.model.transport_callback',
-                    'translator',
-                    '%mautic.mailer_omnivery_max_batch_limit%',
-                    '%mautic.mailer_omnivery_batch_recipient_count%',
-                    '%mautic.mailer_omnivery_webhook_signing_key%',
-
-                    'mautic.helper.core_parameters',
-                     */
-                ],
-                'tag'          => 'mautic.mailer_transport',
-            ],
-
             'mautic.omnivery.http.client' => [
                 'class' => Symfony\Component\HttpClient\NativeHttpClient::class,
             ],
         ],
     ],
 
-    'parameters' => [
-        'mailer_omnivery_max_batch_limit'       => 20,
-        'mailer_omnivery_batch_recipient_count' => 20,
-        'mailer_omnivery_webhook_signing_key'   => '',
-        'mailer_omnivery_host'                  => 'mg-api.omnivery.net',
-    ],
+    'parameters' => [],
 ];
