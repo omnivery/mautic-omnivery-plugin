@@ -50,11 +50,17 @@ class OmniveryApiTransport extends AbstractApiTransport implements TokenTranspor
      */
     private $maxBatchLimit;
 
+    /**
+     * @var string
+     */
+    private $callbackUrl;
+
     public function __construct(
         string $host = '',
         string $key = '',
         string $domain = '',
         int $maxBatchLimit = 0,
+        string $callbackUrl = '',
         EventDispatcherInterface $dispatcher = null,
         HttpClientInterface $client = null,
         LoggerInterface $logger = null,
@@ -63,6 +69,7 @@ class OmniveryApiTransport extends AbstractApiTransport implements TokenTranspor
         $this->key             = $key;
         $this->domain          = $domain;
         $this->maxBatchLimit   = $maxBatchLimit;
+        $this->callbackUrl     = $callbackUrl;
 
         $this->logger          = $logger;
 
@@ -88,9 +95,10 @@ class OmniveryApiTransport extends AbstractApiTransport implements TokenTranspor
 
         $endpoint = sprintf('%s/v3/%s/messages', $this->getEndpoint(), urlencode($this->domain));
         $response = $this->client->request('POST', 'https://'.$endpoint, [
-            'auth_basic' => 'api:'.$this->key,
-            'headers'    => $headers,
-            'body'       => $body->bodyToIterable(),
+            'auth_basic'   => 'api:'.$this->key,
+            'headers'      => $headers,
+            'body'         => $body->bodyToIterable(),
+            'callback_url' => $this->callbackUrl,
         ]);
 
         try {

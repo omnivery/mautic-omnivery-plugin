@@ -2,6 +2,7 @@
 
 namespace MauticPlugin\OmniveryMailerBundle\Mailer\Transport;
 
+use Mautic\CoreBundle\Helper\CoreParametersHelper;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Mailer\Exception\InvalidArgumentException;
@@ -16,11 +17,19 @@ use Symfony\Contracts\HttpClient\HttpClientInterface;
  */
 final class MauticOmniveryTransportFactory extends AbstractTransportFactory
 {
+    /**
+     * @var CoreParametersHelper
+     */
+    private $coreParametersHelper;
+
     public function __construct(
         EventDispatcherInterface $dispatcher = null,
         HttpClientInterface $client = null,
-        LoggerInterface $logger = null
+        LoggerInterface $logger = null,
+        CoreParametersHelper $coreParametersHelper = null
     ) {
+        $this->coreParametersHelper = $coreParametersHelper;
+
         parent::__construct(
             $dispatcher,
             $client,
@@ -38,6 +47,10 @@ final class MauticOmniveryTransportFactory extends AbstractTransportFactory
             $domain        = $dsn->getOption('domain');
             $maxBatchLimit = $dsn->getOption('maxBatchLimit') ?? 5000;
 
+            $rootUrl       = $this->coreParametersHelper->get('site_url');
+            $rootUrl       = rtrim($rootUrl, '/');
+            $callbackUrl   = $rootUrl.'/mailer/callback';
+
             if (null === $key || null === $domain) {
                 throw new InvalidArgumentException('Key or domain not set, cannot create OmniveryApiTransport object!');
             }
@@ -47,6 +60,7 @@ final class MauticOmniveryTransportFactory extends AbstractTransportFactory
                 $key,
                 $domain,
                 $maxBatchLimit,
+                $callbackUrl,
                 $this->dispatcher,
                 $this->client,
                 $this->logger

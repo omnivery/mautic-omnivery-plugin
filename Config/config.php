@@ -50,6 +50,7 @@ return [
                     'event_dispatcher',
                     'mautic.omnivery.http.client',
                     'monolog.logger.mautic',
+                    'mautic.helper.core_parameters',
                 ],
                 'tag'          => 'mailer.transport_factory',
             ],
