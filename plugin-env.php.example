@@ -1,8 +1,0 @@
-<?php
-
-namespace MauticPlugin\OmniveryMailerBundle\Env;
-
-define(__NAMESPACE__ .  '\\MAX_BATCH_LIMIT', 20);
-define(__NAMESPACE__ . '\\BATCH_RECIPIENT_COUNT', 20);
-define(__NAMESPACE__ . '\\WEBHOOK_SIGNING_KEY', '');  /* You MUST update this value to make the plugin work! */
-define(__NAMESPACE__ . '\\HOST', 'mg-api.omnivery.net'); 

@@ -22,9 +22,6 @@
     ],
     "require": {
         "php": ">=7.4.0 <8.1",
-        "mautic/core-lib": "^4.0"
-    },
-    "scripts": {
-        "createEnvFile": "cp plugin-env.php.example .plugin-env.php"
+        "mautic/core-lib": "^5.0"
     }
 }
