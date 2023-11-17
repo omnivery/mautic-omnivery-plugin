@@ -34,7 +34,7 @@ return [
             'mautic.omnivery.subscriber.callback' => [
                 'class'     => \MauticPlugin\OmniveryMailerBundle\EventListener\CallbackSubscriber::class,
                 'arguments' => [
-                    \Mautic\EmailBundle\Model\TransportCallback::class,
+                    'mautic.omnivery.model.transport_callback',
                     'mautic.helper.core_parameters',
                     'monolog.logger.mautic',
                 ],

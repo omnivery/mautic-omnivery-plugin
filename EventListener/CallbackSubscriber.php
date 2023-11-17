@@ -7,7 +7,10 @@ use Mautic\EmailBundle\EmailEvents;
 use Mautic\EmailBundle\Event\TransportWebhookEvent;
 use Mautic\EmailBundle\Model\TransportCallback;
 use Mautic\LeadBundle\Entity\DoNotContact;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Mailer\Transport\Dsn;
 
 class CallbackSubscriber implements EventSubscriberInterface
 {
@@ -46,6 +49,8 @@ class CallbackSubscriber implements EventSubscriberInterface
             ];
         } else {
             // Response must be an array.
+            $event->setResponse(new Response('Omnivery Integration: Could not get event data.'));
+
             return;
         }
 
@@ -131,6 +136,7 @@ class CallbackSubscriber implements EventSubscriberInterface
             }
         }
 
+        $event->setResponse(new Response('Omnivery Integration: Callback processed'));
         $this->logger->debug('End processCallbackRequest');
     }
 }
