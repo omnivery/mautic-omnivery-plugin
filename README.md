@@ -39,7 +39,9 @@ php bin/console mautic:plugins:install --env=dev  # Use mautic:plugins:reload --
 
 ## Running the tests
 
-\[todo\]
+To run all tests `composer phpunit`
+
+To run unit tests `composer unit`
 
 ### Coding style & Syntax Check
 

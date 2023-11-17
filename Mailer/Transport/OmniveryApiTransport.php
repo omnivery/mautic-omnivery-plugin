@@ -98,7 +98,6 @@ class OmniveryApiTransport extends AbstractApiTransport implements TokenTranspor
             'auth_basic'   => 'api:'.$this->key,
             'headers'      => $headers,
             'body'         => $body->bodyToIterable(),
-            'callback_url' => $this->callbackUrl,
         ]);
 
         try {
@@ -132,11 +131,12 @@ class OmniveryApiTransport extends AbstractApiTransport implements TokenTranspor
         [$attachments, $inlines, $html] = $this->prepareAttachments($email, $html);
 
         $payload = [
-            'from'       => $envelope->getSender()->toString(),
-            'to'         => implode(',', $this->stringifyAddresses($this->getRecipients($email, $envelope))),
-            'subject'    => $email->getSubject(),
-            'attachment' => $attachments,
-            'inline'     => $inlines,
+            'from'         => $envelope->getSender()->toString(),
+            'to'           => implode(',', $this->stringifyAddresses($this->getRecipients($email, $envelope))),
+            'subject'      => $email->getSubject(),
+            'attachment'   => $attachments,
+            'inline'       => $inlines,
+            'callback_url' => $this->callbackUrl,
         ];
         if ($emails = $email->getCc()) {
             $payload['cc'] = implode(',', $this->stringifyAddresses($emails));
