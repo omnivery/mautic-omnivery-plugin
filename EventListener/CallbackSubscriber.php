@@ -21,6 +21,18 @@ class CallbackSubscriber implements EventSubscriberInterface
     ) {
     }
 
+    private function getEmailChannelId($headers): string
+    {
+        $keys = array_keys($headers);
+        foreach ($keys as $index => $orgKeyName) {
+            if ('x-email-id' == strtolower($orgKeyName)) {
+                return (string) $headers[$orgKeyName];
+            }
+        }
+
+        return '';
+    }
+
     /**
      * @return array<string, string>
      */
@@ -130,9 +142,19 @@ class CallbackSubscriber implements EventSubscriberInterface
             }
 
             if (null !== $channelId && $canUseChannelId) {
-                $this->transportCallback->addFailureByAddress($event['recipient'], $reason, $type, $channelId);
+                $this->transportCallback->addFailureByAddress(
+                    $event['recipient'],
+                    $reason,
+                    $type,
+                    $channelId
+                );
             } else {
-                $this->transportCallback->addFailureByAddress($event['recipient'], $reason, $type, null);
+                $this->transportCallback->addFailureByAddress(
+                    $event['recipient'],
+                    $reason,
+                    $type,
+                    null
+                );
             }
         }
 
