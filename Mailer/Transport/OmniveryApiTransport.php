@@ -304,6 +304,7 @@ class OmniveryApiTransport extends AbstractApiTransport implements TokenTranspor
     protected function doSendApi(SentMessage $sentMessage, Email $email, Envelope $envelope): ResponseInterface
     {
         try {
+            $response = null;
             $recipientsMeta = $this->mauticGetRecipientData($sentMessage);
             foreach ($recipientsMeta as $recipientMeta) {
                 $payload = $this->mauticGetPayload(
