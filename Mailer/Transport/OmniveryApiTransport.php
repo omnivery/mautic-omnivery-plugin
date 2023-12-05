@@ -17,9 +17,6 @@ use Symfony\Component\Mailer\SentMessage;
 use Symfony\Component\Mailer\Transport\AbstractApiTransport;
 use Symfony\Component\Mime\Address;
 use Symfony\Component\Mime\Email;
-use Symfony\Component\Mime\Part\Multipart\FormDataPart;
-use Symfony\Contracts\HttpClient\Exception\DecodingExceptionInterface;
-use Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 use Symfony\Contracts\HttpClient\ResponseInterface;
 
@@ -181,9 +178,7 @@ class OmniveryApiTransport extends AbstractApiTransport implements TokenTranspor
         $html    = $email->getHtmlBody();
         $headers = $email->getHeaders();
 
-        // This headers can be overwritten if they are specified with the email.
-
-        // Details on how to behave with message.
+        // Details on how to behave with message - these headers can be overwritten if they are specified with the email.
         $oHeaders = [
             'o:testmode' => $this->mauticTransportOptions['o:testmode'],
             'o:tracking' => $this->mauticTransportOptions['o:tracking'],
@@ -311,19 +306,11 @@ class OmniveryApiTransport extends AbstractApiTransport implements TokenTranspor
         try {
             $recipientsMeta = $this->mauticGetRecipientData($sentMessage);
             foreach ($recipientsMeta as $recipientMeta) {
-                /*DevTools::debugLog('recipientMeta ');
-                DevTools::debugLog(print_r($recipientMeta, true));*/
                 $payload = $this->mauticGetPayload(
                     $sentMessage,
                     $recipientMeta
                 );
-                DevTools::debugLog('Payload to send: ');
-                DevTools::debugLog(print_r($payload, true));
-
-                /**
-                 * @todo implement ?
-                 */
-                // $this->checkTemplateIsValid($payload);
+                DevTools::debugLog('Payload to send: '.print_r($payload, true));
 
                 $response = $this->mauticGetApiResponse($payload);
                 $this->handleError($response);
@@ -343,30 +330,5 @@ class OmniveryApiTransport extends AbstractApiTransport implements TokenTranspor
         } catch (\Exception $e) {
             throw new TransportException($e->getMessage());
         }
-
-        /*
-
-        $body    = new FormDataPart($this->getPayload($sentMessage));
-        $headers = [];
-        foreach ($body->getPreparedHeaders()->all() as $header) {
-            $headers[] = $header->toString();
-        }
-
-        try {
-            $statusCode = $response->getStatusCode();
-            $result     = $response->toArray(false);
-        } catch (DecodingExceptionInterface $e) {
-            throw new HttpTransportException('Unable to send an email: '.$response->getContent(false).sprintf(' (code %d).', $statusCode), $response);
-        } catch (TransportExceptionInterface $e) {
-            throw new HttpTransportException('Could not reach the remote Omnivery server.', $response, 0, $e);
-        }
-
-        if (200 !== $statusCode) {
-            throw new HttpTransportException('Unable to send an email: '.$result['message'].sprintf(' (code %d).', $statusCode), $response);
-        }
-
-        $sentMessage->setMessageId($result['id']);
-
-        return $response;*/
     }
 }
