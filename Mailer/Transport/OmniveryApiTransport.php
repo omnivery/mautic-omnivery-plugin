@@ -5,7 +5,6 @@ namespace MauticPlugin\OmniveryMailerBundle\Mailer\Transport;
 use Mautic\EmailBundle\Mailer\Message\MauticMessage;
 use Mautic\EmailBundle\Mailer\Transport\TokenTransportInterface;
 use Mautic\EmailBundle\Mailer\Transport\TokenTransportTrait;
-use MauticPlugin\OmniveryMailerBundle\DevTools;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Mailer\Envelope;
@@ -445,7 +444,6 @@ class OmniveryApiTransport extends AbstractApiTransport implements TokenTranspor
             $sendingTestMessage = $this->mauticIsSendingTestMessage($sentMessage);
             if ($sendingTestMessage) {
                 $payload = $this->mauticGetTestMessagePayload($sentMessage);
-                DevTools::debugLog('Payload to send2: '.print_r($payload, true));
 
                 $response = $this->mauticGetApiResponse($payload);
                 $this->mauticHandleError($response);
@@ -460,7 +458,6 @@ class OmniveryApiTransport extends AbstractApiTransport implements TokenTranspor
                     $sentMessage,
                     $recipientMeta
                 );
-                DevTools::debugLog('Payload to send: '.print_r($payload, true));
 
                 $response = $this->mauticGetApiResponse($payload);
                 $this->mauticHandleError($response);
