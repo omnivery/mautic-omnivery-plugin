@@ -452,16 +452,6 @@ class OmniveryApiTransport extends AbstractApiTransport implements TokenTranspor
 
                 $response = $this->mauticGetApiResponse($payload);
                 $this->mauticHandleError($response);
-
-                /**
-                 * @todo implement ?
-                 */
-                // if ($errorMessage = $this->getErrorMessageFromResponseBody($response->toArray())) {
-                //     /** @var MauticMessage $message */
-                //     $message = $sentMessage->getOriginalMessage();
-                //     $this->processImmediateSendFeedback($payload, $response->toArray(), $message->getMetadata());
-                //     throw new TransportException($errorMessage);
-                // }
             }
 
             return $response;
