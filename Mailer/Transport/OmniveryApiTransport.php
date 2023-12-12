@@ -115,7 +115,15 @@ class OmniveryApiTransport extends AbstractApiTransport implements TokenTranspor
         return $this->maxBatchLimit;
     }
 
-    private function prepareAttachments(MauticMessage $email, ?string $html): array
+    /**
+     * @todo Make it work.
+     *
+     * @param MauticMessage $email [description]
+     * @param string        $html  [description]
+     *
+     * @return [type]               [description]
+     */
+    private function mauticGetAttachments(MauticMessage $email, ?string $html): array
     {
         $attachments = $inlines = [];
         foreach ($email->getAttachments() as $attachment) {
@@ -330,9 +338,9 @@ class OmniveryApiTransport extends AbstractApiTransport implements TokenTranspor
         $hHeaders = [];
 
         /**
-         * @todo Test attachment sending.
+         * @todo Make attachments work.
          */
-        [$attachments, $inlines, $html] = $this->prepareAttachments($email, $html);
+        [$attachments, $inlines, $html] = $this->mauticGetAttachments($email, $html);
 
         foreach ($headers->all() as $name => $header) {
             if (\in_array(strtolower($name), self::MAUTIC_HEADERS_TO_BYPASS, true)) {
@@ -383,8 +391,12 @@ class OmniveryApiTransport extends AbstractApiTransport implements TokenTranspor
                 'subject'       => $email->getSubject(),
                 'text'          => $text,
                 'html'          => $html,
-                'attachment'    => $attachments,
-                'inline'        => $inlines,
+
+                /**
+                 * @todo Support for attachments.
+                 */
+                /* 'attachment'    => $attachments, */
+
                 'substitutions' => json_encode($substitutions),
                 'callback_url'  => $this->callbackUrl,
             ],
