@@ -29,6 +29,16 @@ class OmniveryApiTransport extends AbstractApiTransport implements TokenTranspor
 
     public const HOST = 'mg-api.omnivery.net';
 
+    public const MAUTIC_HEADERS_TO_BYPASS = [
+        'from',
+        'to',
+        'reply-to',
+        'cc',
+        'bcc',
+        'subject',
+        'content-type',
+    ];
+
     /**
      * @var LoggerInterface
      */
@@ -160,6 +170,132 @@ class OmniveryApiTransport extends AbstractApiTransport implements TokenTranspor
         }
     }
 
+    private function mauticIsSendingTestMessage(SentMessage $sentMessage): bool
+    {
+        $email = $sentMessage->getOriginalMessage();
+
+        if (!$email instanceof MauticMessage) {
+            throw new TransportException('Message must be an instance of '.MauticMessage::class);
+        }
+
+        // When we are sending test email message $metadata and most of $sentMessage is empty
+        $metadata = $email->getMetadata();
+
+        return !(bool) count($metadata);
+    }
+
+    private function mauticGetTestMessagePayload(SentMessage $sentMessage): array
+    {
+        $email = $sentMessage->getOriginalMessage();
+
+        if (!$email instanceof MauticMessage) {
+            throw new TransportException('Message must be an instance of '.MauticMessage::class);
+        }
+
+        $toList     = null;
+        $fromList   = null;
+        $subject    = null;
+
+        $text    = $email->getTextBody();
+        $html    = $email->getHtmlBody();
+        $headers = $email->getHeaders();
+
+        foreach ($headers->all() as $name => $header) {
+            $headerKey = strtolower($name);
+
+            switch ($headerKey) {
+                case 'from':
+                    $fromList = $header->getAddresses();
+                    break;
+                case 'to':
+                    $toList = $header->getAddresses();
+                    break;
+                case 'subject':
+                    $subject = $header->getValue();
+                    break;
+
+                default:
+                    break;
+            }
+
+            if (null !== $toList && null !== $fromList && null !== $subject) {
+                break;
+            }
+        }
+
+        // Details on how to behave with message - these headers can be overwritten if they are specified with the email.
+        $oHeaders = [
+            'o:testmode' => $this->mauticTransportOptions['o:testmode'],
+            'o:tracking' => $this->mauticTransportOptions['o:tracking'],
+        ];
+
+        // Attach custom JSON data.
+        $vHeaders = [];
+
+        // Template variables.
+        $tHeaders = [];
+
+        // Other headers.
+        $hHeaders = [];
+
+        foreach ($headers->all() as $name => $header) {
+            if (\in_array(strtolower($name), self::MAUTIC_HEADERS_TO_BYPASS, true)) {
+                continue;
+            }
+
+            if ($header instanceof TagHeader) {
+                $oHeaders['o:tag'] = $header->getValue();
+                continue;
+            }
+
+            if ($header instanceof MetadataHeader) {
+                $vHeaderKey            ='v:'.$header->getKey();
+                $vHeaders[$vHeaderKey] = $header->getValue();
+                continue;
+            }
+
+            // Check if it is a valid prefix or header name according to Omnivery API
+            $prefix = substr($name, 0, 2);
+            switch ($prefix) {
+                case 'o:':
+                    $oHeaders[$header->getName()] = $header->getBodyAsString();
+                    break;
+                case 'v:':
+                    $vHeaders[$header->getName()] = $header->getBodyAsString();
+                    break;
+                case 't:':
+                    $tHeaders[$header->getName()] = $header->getBodyAsString();
+                    break;
+                case 'h:':
+                    $hHeaders[$header->getName()] = $header->getBodyAsString();
+                    break;
+                default:
+                    $headerName            = 'h:'.$header->getName();
+                    $hHeaders[$headerName] = $header->getBodyAsString();
+            }
+        }
+
+        $substitutions = $recipientMeta['meta']['tokens'] ?? [];
+
+        return array_merge(
+            [
+                'from'          => $this->mauticStringifyAddresses($fromList),
+                'to'            => $this->mauticStringifyAddresses($toList),
+                'reply_to'      => $this->mauticStringifyAddresses($toList),
+                'cc'            => [],
+                'bcc'           => [],
+                'subject'       => $subject,
+                'text'          => $text,
+                'html'          => $html,
+                'callback_url'  => $this->callbackUrl,
+            ],
+            $oHeaders,
+            $vHeaders,
+            $tHeaders,
+            $hHeaders,
+        );
+    }
+
     private function mauticGetPayload(SentMessage $sentMessage, array $recipientMeta): array
     {
         $email = $sentMessage->getOriginalMessage();
@@ -198,19 +334,8 @@ class OmniveryApiTransport extends AbstractApiTransport implements TokenTranspor
          */
         [$attachments, $inlines, $html] = $this->prepareAttachments($email, $html);
 
-        // We ignore these headers since we set them explicitly at the end.
-        $headersToBypass = [
-            'from',
-            'to',
-            'reply-to',
-            'cc',
-            'bcc',
-            'subject',
-            'content-type',
-        ];
-
         foreach ($headers->all() as $name => $header) {
-            if (\in_array(strtolower($name), $headersToBypass, true)) {
+            if (\in_array(strtolower($name), self::MAUTIC_HEADERS_TO_BYPASS, true)) {
                 continue;
             }
 
@@ -289,7 +414,7 @@ class OmniveryApiTransport extends AbstractApiTransport implements TokenTranspor
         );
     }
 
-    private function handleError(ResponseInterface $response): void
+    private function mauticHandleError(ResponseInterface $response): void
     {
         if (200 === $response->getStatusCode()) {
             return;
@@ -303,8 +428,20 @@ class OmniveryApiTransport extends AbstractApiTransport implements TokenTranspor
 
     protected function doSendApi(SentMessage $sentMessage, Email $email, Envelope $envelope): ResponseInterface
     {
+        $response = null;
         try {
-            $response = null;
+            $sendingTestMessage = $this->mauticIsSendingTestMessage($sentMessage);
+            if ($sendingTestMessage) {
+                $payload = $this->mauticGetTestMessagePayload($sentMessage);
+                DevTools::debugLog('Payload to send2: '.print_r($payload, true));
+
+                $response = $this->mauticGetApiResponse($payload);
+                $this->mauticHandleError($response);
+
+                return $response;
+            }
+
+            // For sending all other emails (segments, example emails, direct emails, etc.)
             $recipientsMeta = $this->mauticGetRecipientData($sentMessage);
             foreach ($recipientsMeta as $recipientMeta) {
                 $payload = $this->mauticGetPayload(
@@ -314,7 +451,7 @@ class OmniveryApiTransport extends AbstractApiTransport implements TokenTranspor
                 DevTools::debugLog('Payload to send: '.print_r($payload, true));
 
                 $response = $this->mauticGetApiResponse($payload);
-                $this->handleError($response);
+                $this->mauticHandleError($response);
 
                 /**
                  * @todo implement ?
