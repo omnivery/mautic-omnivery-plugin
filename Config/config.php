@@ -2,7 +2,7 @@
 
 return [
     'name'        => 'OmniveryMailer',
-    'description' => 'Integrate Mailer transport for Omnivery API',
+    'description' => 'Integrate Mailer transport for Omnivery API (mautic 5)',
     'author'      => 'Matic Zagmajster',
     'version'     => '1.0.2',
 
