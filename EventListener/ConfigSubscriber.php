@@ -9,6 +9,10 @@ use Mautic\CoreBundle\Helper\CoreParametersHelper;
 use MauticPlugin\OmniveryMailerBundle\Form\Type\ConfigType;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
+/**
+ * @todo Add support for multi-domain to use this class. At the moment this class provides no
+ * functionality to the plugin.
+ */
 class ConfigSubscriber implements EventSubscriberInterface
 {
     /**
