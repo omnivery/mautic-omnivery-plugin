@@ -13,7 +13,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Mailer\Transport\Dsn;
 
 /**
- * Supported webhook events by Omnivery
+ * Supported webhook events by Omnivery.
  *
  * evevnt              O M
  * delivered           * *
@@ -28,12 +28,10 @@ use Symfony\Component\Mailer\Transport\Dsn;
  * temporary_fail      x *
  *
  * More info here: https://docs.omnivery.com/docs/mailgun-api-v3/5cc9374300b99-webhooks#webhook-event-types
- * 
  */
-
 class CallbackSubscriber implements EventSubscriberInterface
 {
-    const WEBHOOK_MESSAGE_EVENTS = [
+    public const WEBHOOK_MESSAGE_EVENTS = [
         'delivered',
         'failed',
         'rejected',
@@ -62,21 +60,22 @@ class CallbackSubscriber implements EventSubscriberInterface
         return '';
     }
 
-    private function isValidMessageEvent(array $eventData): bool {
+    private function isValidMessageEvent(array $eventData): bool
+    {
         return in_array($eventData['event'], self::WEBHOOK_MESSAGE_EVENTS);
     }
 
-    private function processCallbackByEmailAddress(?string $recipient, array $eventData): void {
-        $event = $eventData['event'];
+    private function processCallbackByEmailAddress(?string $recipient, array $eventData): void
+    {
+        $event          = $eventData['event'];
         $deliveryStatus = $eventData['delivery-status'] ?? [];
         $messageHeaders = $eventData['message']['headers'] ?? [];
-        $severity = $eventData['severity'] ?? null;
-        $channelId = $this->getEmailChannelId($messageHeaders);
+        $severity       = $eventData['severity'] ?? null;
+        $channelId      = $this->getEmailChannelId($messageHeaders);
 
         if (isset($deliveryStatus['description'])) {
             $comments = $deliveryStatus['description'];
-        }
-        else {
+        } else {
             $comments = $deliveryStatus['message'];
         }
 
@@ -85,7 +84,6 @@ class CallbackSubscriber implements EventSubscriberInterface
         switch ($event) {
             case 'bounce':
             case 'permanent_fail':
-
                 $type = DoNotContact::BOUNCED;
                 break;
 
@@ -124,8 +122,8 @@ class CallbackSubscriber implements EventSubscriberInterface
                 break;
         }
 
-        if ($type === null) {
-            // It does not appear that there is anyhing wrong 
+        if (null === $type) {
+            // It does not appear that there is anyhing wrong
             // with the message. Nothing else to do here :).
             return;
         }
@@ -145,7 +143,6 @@ class CallbackSubscriber implements EventSubscriberInterface
                 null
             );
         }
-
     }
 
     /**
@@ -165,10 +162,10 @@ class CallbackSubscriber implements EventSubscriberInterface
             return;
         }
 
-        $postData = json_decode($event->getRequest()->getContent(), true);
+        $postData  = json_decode($event->getRequest()->getContent(), true);
         $eventData = null;
         $this->logger->debug('Start processCallbackRequest, incomming request', ['postData' => $postData]);
-        
+
         if (is_array($postData) && isset($postData['event-data'])) {
             // Omnivery API callback
             $eventData = $postData['event-data'];
@@ -177,7 +174,7 @@ class CallbackSubscriber implements EventSubscriberInterface
                 new Response(
                     json_encode([
                         'message' => 'Could not find event-data key, not processing.',
-                        'success' => false
+                        'success' => false,
                     ]),
                     Response::HTTP_BAD_REQUEST,
                     ['content-type' => 'application/json']
@@ -188,6 +185,7 @@ class CallbackSubscriber implements EventSubscriberInterface
                 'OmniveryTransportCallbackSubscriber: Could not process webhook request for payload.',
                 ['payload' => $postData]
             );
+
             return;
         }
 
@@ -196,7 +194,7 @@ class CallbackSubscriber implements EventSubscriberInterface
                 new Response(
                     json_encode([
                         'message' => sprintf('Unrecognized event type: "%s".', $eventData['event']),
-                        'success' => false
+                        'success' => false,
                     ]),
                     Response::HTTP_UNPROCESSABLE_ENTITY,
                     ['content-type' => 'application/json']
