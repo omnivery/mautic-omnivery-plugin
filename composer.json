@@ -21,8 +21,8 @@
         }
     ],
     "require": {
-        "php": ">=7.4.0 <8.1",
-        "mautic/core-lib": "^5.0"
+        "php": ">=8.1 <=8.5",
+        "mautic/core-lib": "^7.0"
     },
     "scripts": {
         "phpunit": "../../bin/phpunit -d --bootstrap ../../vendor/autoload.php --configuration phpunit.xml --fail-on-warning --testsuite=all",
