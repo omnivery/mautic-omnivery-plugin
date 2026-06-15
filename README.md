@@ -1,4 +1,4 @@
-# Omnivery API plugin for Mautic v5
+# Omnivery API plugin for Mautic v7
 
 Plugin provides integration with Omnivery so you can send email messages from Mautic via API using your domains.
 
@@ -8,7 +8,7 @@ Plugin provides integration with Omnivery so you can send email messages from Ma
 
 ### Prerequisites
 
-- Project was tested on Mautic v5.0.0-rc1.
+- Project was tested on Mautic v7.2.0-rc.
 - During development having composer setup can be handy to run scripts in `composer.json`.
 
 ### Installing
@@ -56,7 +56,7 @@ When you are reloading the plugin, make sure you use `--env=prod` switch on prod
 ![Config for Omnivery transport](docs/img/omnivery_config.jpg)
 
 - Save the settings
-- Send test Email to see if it works. 
+- Send test Email to see if it works.
 
 **Happy emailing =)!**
 
