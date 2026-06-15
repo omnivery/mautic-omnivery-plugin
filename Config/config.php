@@ -9,14 +9,14 @@ return [
     'services' => [
         'forms' => [
             'mautic.omnivery.form.type.account' => [
-                'class'     => \MauticPlugin\OmniveryMailerBundle\Form\Type\OmniveryAccountType::class,
+                'class'     => MauticPlugin\OmniveryMailerBundle\Form\Type\OmniveryAccountType::class,
                 'arguments' => [
                     'mautic.helper.core_parameters',
                 ],
             ],
 
             'mautic.omnivery.form.type.config' => [
-                'class'     => \MauticPlugin\OmniveryMailerBundle\Form\Type\ConfigType::class,
+                'class'     => MauticPlugin\OmniveryMailerBundle\Form\Type\ConfigType::class,
                 'arguments' => [
                     'mautic.helper.core_parameters',
                 ],
@@ -25,14 +25,14 @@ return [
 
         'events' => [
             'mautic.omnivery.subscriber.config' => [
-                'class'     => \MauticPlugin\OmniveryMailerBundle\EventListener\ConfigSubscriber::class,
+                'class'     => MauticPlugin\OmniveryMailerBundle\EventListener\ConfigSubscriber::class,
                 'arguments' => [
                     'mautic.helper.core_parameters',
                 ],
             ],
 
             'mautic.omnivery.subscriber.callback' => [
-                'class'     => \MauticPlugin\OmniveryMailerBundle\EventListener\CallbackSubscriber::class,
+                'class'     => MauticPlugin\OmniveryMailerBundle\EventListener\CallbackSubscriber::class,
                 'arguments' => [
                     'mautic.omnivery.model.transport_callback',
                     'mautic.helper.core_parameters',
@@ -45,7 +45,7 @@ return [
 
         'other' => [
             'mautic.omnivery.transport_factory' => [
-                'class'        => \MauticPlugin\OmniveryMailerBundle\Mailer\Transport\MauticOmniveryTransportFactory::class,
+                'class'        => MauticPlugin\OmniveryMailerBundle\Mailer\Transport\MauticOmniveryTransportFactory::class,
                 'arguments'    => [
                     'event_dispatcher',
                     'mautic.omnivery.http.client',

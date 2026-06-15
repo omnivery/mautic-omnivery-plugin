@@ -76,9 +76,9 @@ class OmniveryApiTransport extends AbstractApiTransport implements TokenTranspor
         string $domain = '',
         int $maxBatchLimit = 0,
         string $callbackUrl = '',
-        EventDispatcherInterface $dispatcher = null,
-        HttpClientInterface $client = null,
-        LoggerInterface $logger = null,
+        ?EventDispatcherInterface $dispatcher = null,
+        ?HttpClientInterface $client = null,
+        ?LoggerInterface $logger = null,
     ) {
         $this->host                   = $host;
         $this->key                    = $key;

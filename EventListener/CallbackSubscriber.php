@@ -44,7 +44,7 @@ class CallbackSubscriber implements EventSubscriberInterface
     public function __construct(
         private TransportCallback $transportCallback,
         private CoreParametersHelper $coreParametersHelper,
-        private LoggerInterface $logger
+        private LoggerInterface $logger,
     ) {
     }
 

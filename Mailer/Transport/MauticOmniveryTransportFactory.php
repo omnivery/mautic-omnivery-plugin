@@ -23,10 +23,10 @@ final class MauticOmniveryTransportFactory extends AbstractTransportFactory
     private $coreParametersHelper;
 
     public function __construct(
-        EventDispatcherInterface $dispatcher = null,
-        HttpClientInterface $client = null,
-        LoggerInterface $logger = null,
-        CoreParametersHelper $coreParametersHelper = null
+        ?EventDispatcherInterface $dispatcher = null,
+        ?HttpClientInterface $client = null,
+        ?LoggerInterface $logger = null,
+        ?CoreParametersHelper $coreParametersHelper = null,
     ) {
         $this->coreParametersHelper = $coreParametersHelper;
 

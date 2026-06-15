@@ -29,7 +29,7 @@ class OmniveryAccountType extends AbstractType
                 'attr'       => [
                     'class'   => 'form-control',
                     // 'tooltip' => 'mautic.asset.config.form.max.size.tooltip',
-                    ],
+                ],
                 'constraints' => [
                     /*new NotBlank([
                         'message' => 'mautic.core.value.required',
@@ -54,7 +54,7 @@ class OmniveryAccountType extends AbstractType
                 'attr'       => [
                     'class'   => 'form-control',
                     // 'tooltip' => 'mautic.asset.config.form.max.size.tooltip',
-                    ],
+                ],
                 'constraints' => [
                     /*new NotBlank([
                         'message' => 'mautic.core.value.required',
@@ -92,7 +92,7 @@ class OmniveryAccountType extends AbstractType
                 'attr'       => [
                     'class'   => 'form-control',
                     // 'tooltip' => 'mautic.asset.config.form.max.size.tooltip',
-                    ],
+                ],
                 'constraints' => [
                     /*new NotBlank([
                         'message' => 'mautic.core.value.required',

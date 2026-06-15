@@ -28,7 +28,7 @@ class ConfigType extends AbstractType
                 'attr'       => [
                     'class'   => 'form-control',
                     // 'tooltip' => 'mautic.asset.config.form.max.size.tooltip',
-                    ],
+                ],
                 'constraints' => [
                     new NotBlank([
                         'message' => 'mautic.core.value.required',
@@ -46,7 +46,7 @@ class ConfigType extends AbstractType
                 'attr'       => [
                     'class'   => 'form-control',
                     // 'tooltip' => 'mautic.asset.config.form.max.size.tooltip',
-                    ],
+                ],
                 'constraints' => [
                     new NotBlank([
                         'message' => 'mautic.core.value.required',
@@ -71,7 +71,7 @@ class ConfigType extends AbstractType
                 'attr'       => [
                     'class'   => 'form-control',
                     // 'tooltip' => 'mautic.asset.config.form.max.size.tooltip',
-                    ],
+                ],
                 'constraints' => [
                     new NotBlank([
                         'message' => 'mautic.core.value.required',
